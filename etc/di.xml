@@ -1,8 +1,13 @@
 <?xml version="1.0"?>
-
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Catalog\Model\Category">
         <plugin name="add_link_masking_to_category" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Category\AddLinkMaskingToCategory" />
     </type>
-
+    <type name="Magento\Swatches\Block\LayeredNavigation\RenderLayered">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="template" xsi:type="string">MageSuite_SeoLinkMasking::product/layered/renderer.phtml</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
