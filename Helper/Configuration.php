@@ -22,6 +22,15 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         $this->scopeConfig = $scopeConfigInterface;
     }
 
+    public function getDefaultMaskingState()
+    {
+        if (!$this->isLinkMaskingEnabled()) {
+            return false;
+        }
+
+        return (bool)$this->getConfig()->getDefaultMaskingState();
+    }
+
     public function isLinkMaskingEnabled()
     {
         return (bool)$this->getConfig()->getIsEnabled();

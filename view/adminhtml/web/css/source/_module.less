@@ -1,0 +1,53 @@
+.category-attribute-seo-link-masking {
+  table {
+    thead {
+      th {
+        background: #ffffff;
+        border: solid #c9c2b8;
+        border-width: 0 0 1px;
+        padding: 7px;
+        vertical-align: middle;
+      }
+    }
+
+    tbody, thead {
+      tr {
+        td {
+          background-color: transparent;
+          vertical-align: middle;
+          padding: 2px 7px;
+          span {
+            padding: 0;
+          }
+
+          div.admin__field-control {
+            div.admin__field-service {
+              font-size:80%;
+              white-space:nowrap;
+              padding-top: 0.5rem;
+              padding-bottom: 0.5rem;
+              text-align: left;
+            }
+          }
+        }
+
+        td.pin-switch {
+          div.admin__actions-switch {
+            max-width: 40px;
+            overflow: hidden;
+          }
+          span.admin__actions-switch-text {
+            visibility: hidden;
+            :before {
+              padding-left:0;
+            }
+          }
+        }
+      }
+
+      tr:nth-child(even) {
+        background: #fbfaf6;
+      }
+    }
+  }
+}

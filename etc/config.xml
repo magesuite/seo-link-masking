@@ -4,6 +4,7 @@
         <seo>
             <link_masking>
                 <is_enabled>0</is_enabled>
+                <default_masking_state>0</default_masking_state>
             </link_masking>
         </seo>
     </default>
