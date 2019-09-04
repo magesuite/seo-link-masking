@@ -63,11 +63,10 @@ class FilterableAttributesProvider
     public function getList($currentCategory)
     {
         $cacheKey = $this->getCacheKey($currentCategory->getId());
+        $cachedData = $this->cache->load($cacheKey);
 
-        $attributesList = $this->serializer->unserialize($this->cache->load($cacheKey));
-
-        if (!empty($attributesList)) {
-            return $attributesList;
+        if (!empty($cachedData)) {
+            return $this->serializer->unserialize($this->cache->load($cacheKey));
         }
 
         $attributesList = [];
@@ -86,7 +85,7 @@ class FilterableAttributesProvider
             ];
         }
 
-        $this->cache->save($this->serializer->serialize($attributesList), $cacheKey, ['category_filter_attributes'], self::CACHE_LIFETIME);
+        $this->cache->save($this->serializer->serialize($attributesList), $cacheKey, array_merge(['category_filter_attributes'], $currentCategory->getIdentities()), self::CACHE_LIFETIME);
 
         return $attributesList;
     }
