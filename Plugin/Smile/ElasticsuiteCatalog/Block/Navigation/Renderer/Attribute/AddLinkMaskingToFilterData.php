@@ -30,11 +30,12 @@ class AddLinkMaskingToFilterData
             return $result;
         }
 
-        if (!$this->configuration->isLinkMaskingEnabled()) {
-            return $result;
-        }
-
         $jsLayoutConfig = json_decode($result, true);
+
+        if (!$this->configuration->isLinkMaskingEnabled()) {
+            $jsLayoutConfig['isLinkMaskingEnabled'] = false;
+            return json_encode($jsLayoutConfig);
+        }
 
         $jsLayoutConfig['isLinkMaskingEnabled'] = $subject->getFilter()->getIsLinkMaskingEnabled();
 
