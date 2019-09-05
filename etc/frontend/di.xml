@@ -4,6 +4,10 @@
         <plugin name="is_link_masking_enabled" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\AbstractFilter\IsLinkMaskingEnabled"/>
     </type>
 
+    <type name="Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute">
+        <plugin name="add_link_masking_to_filter_data" type="MageSuite\SeoLinkMasking\Plugin\Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute\AddLinkMaskingToFilterData" />
+    </type>
+
 </config>
 
 
