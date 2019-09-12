@@ -36,6 +36,16 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return (bool)$this->getConfig()->getIsEnabled();
     }
 
+    public function isShortFilterUrlEnabled()
+    {
+        return (bool)$this->getConfig()->getIsShortFilterUrlEnabled();
+    }
+
+    public function getMultiselectOptionSeparator()
+    {
+        return $this->getConfig()->getMultiselectOptionSeparator();
+    }
+
     protected function getConfig()
     {
         if ($this->config === null) {

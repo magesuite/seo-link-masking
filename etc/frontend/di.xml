@@ -1,7 +1,23 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Catalog\Model\Layer\Filter\AbstractFilter">
-        <plugin name="is_link_masking_enabled" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\AbstractFilter\IsLinkMaskingEnabled"/>
+        <plugin name="is_link_masking_enabled" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\AbstractFilter\IsLinkMaskingEnabled" />
+    </type>
+
+    <type name="Magento\Catalog\Model\Layer\Filter\Item">
+        <plugin name="adjust_filter_item_url" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\Item\AdjustFilterItemUrl" />
+    </type>
+
+    <type name="Magento\Framework\App\RouterList">
+        <arguments>
+            <argument name="routerList" xsi:type="array">
+                <item name="short_filter_url" xsi:type="array">
+                    <item name="class" xsi:type="string">MageSuite\SeoLinkMasking\Controller\Router</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">15</item>
+                </item>
+            </argument>
+        </arguments>
     </type>
 
     <type name="Magento\Swatches\Block\LayeredNavigation\RenderLayered">
