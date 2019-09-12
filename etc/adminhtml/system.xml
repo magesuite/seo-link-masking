@@ -9,9 +9,9 @@
             <label>SEO</label>
             <tab>magesuite</tab>
             <resource>MageSuite_SeoLinkMasking::configuration</resource>
-            <group id="link_masking" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="link_masking" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Link masking</label>
-                <field id="is_enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="is_enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Is Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
@@ -23,6 +23,19 @@
                     <source_model>MageSuite\SeoLinkMasking\Model\Source\DefaultMaskingState</source_model>
                     <comment>
                         <![CDATA[If "Is Masked" is selected, all filters links will be masked by default. It can be overwritten for each filter link in category edit page.]]>
+                    </comment>
+                </field>
+                <field id="is_short_filter_url_enabled" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Hide filter names in URL</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[By enabling this option, filters in URL will contain only the value, without the key. Example: "domain.com/category?color=blue&size=XS" before, "domain.com/category/blue/XS" after.]]>
+                    </comment>
+                </field>
+                <field id="multiselect_option_separator" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Option Separator</label>
+                    <comment>
+                        <![CDATA[This separator will be used to separate options in multiselect filter.]]>
                     </comment>
                 </field>
             </group>

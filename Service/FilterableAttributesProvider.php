@@ -102,6 +102,7 @@ class FilterableAttributesProvider
         $collection
             ->setCategory($category)
             ->addIsFilterableFilter()
+            ->addFieldToFilter(\Magento\Eav\Api\Data\AttributeInterface::FRONTEND_INPUT, ['in' => \MageSuite\SeoLinkMasking\Service\FilterItemUrlProcessor::$filterableAttributeTypes])
             ->addStoreLabel($category->getStoreId())
             ->setOrder('position', \Magento\Framework\Api\SortOrder::SORT_ASC)
             ->setOrder('attribute_id', \Magento\Framework\Api\SortOrder::SORT_ASC);
