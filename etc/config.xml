@@ -5,6 +5,7 @@
             <link_masking>
                 <is_enabled>0</is_enabled>
                 <default_masking_state>0</default_masking_state>
+                <only_one_filter_demasked>0</only_one_filter_demasked>
                 <is_short_filter_url_enabled>0</is_short_filter_url_enabled>
                 <multiselect_option_separator>--</multiselect_option_separator>
             </link_masking>

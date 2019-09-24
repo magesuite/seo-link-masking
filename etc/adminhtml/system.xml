@@ -25,14 +25,21 @@
                         <![CDATA[If "Is Masked" is selected, all filters links will be masked by default. It can be overwritten for each filter link in category edit page.]]>
                     </comment>
                 </field>
-                <field id="is_short_filter_url_enabled" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="only_one_filter_demasked" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Only one filter demasked</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[By enabling this option, only one filter will be demasked. If customer choose any filter, the rest will be masked.]]>
+                    </comment>
+                </field>
+                <field id="is_short_filter_url_enabled" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Hide filter names in URL</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
                         <![CDATA[By enabling this option, filters in URL will contain only the value, without the key. Example: "domain.com/category?color=blue&size=XS" before, "domain.com/category/blue/XS" after.]]>
                     </comment>
                 </field>
-                <field id="multiselect_option_separator" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="multiselect_option_separator" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Option Separator</label>
                     <comment>
                         <![CDATA[This separator will be used to separate options in multiselect filter.]]>

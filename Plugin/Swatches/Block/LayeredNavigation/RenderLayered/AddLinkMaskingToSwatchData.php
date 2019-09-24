@@ -14,12 +14,19 @@ class AddLinkMaskingToSwatchData
      */
     protected $configuration;
 
+    /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Filter
+     */
+    protected $filterHelper;
+
     public function __construct(
         \Magento\Framework\Registry $registry,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
+        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper
     ) {
         $this->registry = $registry;
         $this->configuration = $configuration;
+        $this->filterHelper = $filterHelper;
     }
 
     public function afterGetSwatchData(\Magento\Swatches\Block\LayeredNavigation\RenderLayered $subject, $result)
@@ -29,6 +36,11 @@ class AddLinkMaskingToSwatchData
         $category = $this->getCategory();
 
         if (empty($category)) {
+            return $result;
+        }
+
+        if ($this->configuration->onlyOneFilterDemasked() && $this->filterHelper->isFilterSelected($category)) {
+            $result['is_link_masking_enabled'] = true;
             return $result;
         }
 

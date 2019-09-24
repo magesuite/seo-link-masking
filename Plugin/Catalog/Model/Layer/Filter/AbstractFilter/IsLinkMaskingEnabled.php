@@ -14,12 +14,19 @@ class IsLinkMaskingEnabled
      */
     protected $configuration;
 
+    /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Filter
+     */
+    protected $filterHelper;
+
     public function __construct(
         \Magento\Framework\Registry $registry,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
+        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper
     ) {
         $this->registry = $registry;
         $this->configuration = $configuration;
+        $this->filterHelper = $filterHelper;
     }
 
     public function aroundGetData(\Magento\Catalog\Model\Layer\Filter\AbstractFilter $subject, \Closure $proceed, $key = '', $index = null)
@@ -32,6 +39,10 @@ class IsLinkMaskingEnabled
 
         if (empty($category)) {
             return $proceed($key, $index);
+        }
+
+        if ($this->configuration->onlyOneFilterDemasked() && $this->filterHelper->isFilterSelected($category)) {
+            return true;
         }
 
         $seoLinkMasking = $category->getSeoLinkMasking();

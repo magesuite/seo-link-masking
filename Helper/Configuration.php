@@ -36,6 +36,11 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return (bool)$this->getConfig()->getIsEnabled();
     }
 
+    public function onlyOneFilterDemasked()
+    {
+        return (bool)$this->getConfig()->getOnlyOneFilterDemasked();
+    }
+
     public function isShortFilterUrlEnabled()
     {
         return (bool)$this->getConfig()->getIsShortFilterUrlEnabled();
