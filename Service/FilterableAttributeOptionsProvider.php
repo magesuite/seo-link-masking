@@ -5,7 +5,7 @@ namespace MageSuite\SeoLinkMasking\Service;
 class FilterableAttributeOptionsProvider
 {
     const CACHE_LIFETIME = 86400;
-    const CACHE_TAG = 'filter_attribute_options';
+    const CACHE_TAG = 'filter_attribute_options_%s';
 
     /**
      * @var \Magento\Framework\App\CacheInterface
@@ -16,6 +16,11 @@ class FilterableAttributeOptionsProvider
      * @var \Magento\Framework\Serialize\SerializerInterface
      */
     protected $serializer;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
 
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory
@@ -30,11 +35,13 @@ class FilterableAttributeOptionsProvider
     public function __construct(
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeCollectionFactory,
         \MageSuite\SeoLinkMasking\Helper\Url $urlHelper
     ) {
         $this->cache = $cache;
         $this->serializer = $serializer;
+        $this->storeManager = $storeManager;
         $this->attributeCollectionFactory = $attributeCollectionFactory;
         $this->urlHelper = $urlHelper;
     }
@@ -80,6 +87,6 @@ class FilterableAttributeOptionsProvider
 
     private function getCacheKey()
     {
-        return self::CACHE_TAG;
+        return sprintf(self::CACHE_TAG, $this->storeManager->getStore()->getId());
     }
 }

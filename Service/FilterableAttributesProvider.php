@@ -5,7 +5,7 @@ namespace MageSuite\SeoLinkMasking\Service;
 class FilterableAttributesProvider
 {
     const CACHE_LIFETIME = 86400;
-    const CACHE_TAG = 'category_filter_attributes_%s';
+    const CACHE_TAG = 'category_filter_attributes_%s_%s';
 
     /**
      * @var \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory
@@ -42,6 +42,11 @@ class FilterableAttributesProvider
      */
     protected $serializer;
 
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
+
     public function __construct(
         \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory,
         \Smile\ElasticsuiteCore\Api\Search\ContextInterface $searchContext,
@@ -49,7 +54,8 @@ class FilterableAttributesProvider
         \Smile\ElasticsuiteCatalog\Model\Category\Filter\Provider $filterProvider,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Framework\Serialize\SerializerInterface $serializer
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->attributeCollectionFactory = $attributeCollectionFactory;
         $this->searchContext = $searchContext;
@@ -58,6 +64,7 @@ class FilterableAttributesProvider
         $this->configuration = $configuration;
         $this->cache = $cache;
         $this->serializer = $serializer;
+        $this->storeManager = $storeManager;
     }
 
     public function getList($currentCategory)
@@ -92,7 +99,7 @@ class FilterableAttributesProvider
 
     private function getCacheKey($categoryId)
     {
-        return sprintf(self::CACHE_TAG, $categoryId);
+        return sprintf(self::CACHE_TAG, $categoryId, $this->storeManager->getStore()->getId());
     }
 
     private function getAttributes($category)
