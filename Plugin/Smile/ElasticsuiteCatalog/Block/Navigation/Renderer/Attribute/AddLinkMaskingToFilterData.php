@@ -12,15 +12,22 @@ class AddLinkMaskingToFilterData
     protected $configuration;
 
     /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $url;
+
+    /**
      * @var \Magento\Framework\Data\Helper\PostHelper
      */
     protected $postHelper;
 
     public function __construct(
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        \Magento\Framework\UrlInterface $url,
         \Magento\Framework\Data\Helper\PostHelper $postHelper
     ) {
         $this->configuration = $configuration;
+        $this->url = $url;
         $this->postHelper = $postHelper;
     }
 
@@ -43,8 +50,10 @@ class AddLinkMaskingToFilterData
             return json_encode($jsLayoutConfig);
         }
 
+        $linkmaskingUrl = $this->url->getUrl(self::LINK_MASKING_ENDPOINT);
+
         foreach ($jsLayoutConfig['items'] as &$item) {
-            $item['url'] = $this->postHelper->getPostData(self::LINK_MASKING_ENDPOINT, ['url' => $item['url']]);
+            $item['url'] = $this->postHelper->getPostData($linkmaskingUrl, ['url' => $item['url']]);
         }
 
         return json_encode($jsLayoutConfig);
