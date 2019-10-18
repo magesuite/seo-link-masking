@@ -55,7 +55,7 @@ class FilterParametersProcessor
                 return null;
             }
 
-            return ['key' => $options[$parameter]['code'], 'value' => $this->urlHelper->decodeValue($parameter)];
+            return ['key' => $options[$parameter]['code'], 'value' => $options[$parameter]['value']];
         }
 
         $parameterOptions = explode($this->configuration->getMultiselectOptionSeparator(), $parameter);
@@ -69,7 +69,7 @@ class FilterParametersProcessor
             }
 
             $key = $options[$parameterOption]['code'];
-            $values[] = $this->urlHelper->decodeValue($parameterOption);
+            $values[] = $options[$parameterOption]['value'];
         }
 
         if (empty($key)) {

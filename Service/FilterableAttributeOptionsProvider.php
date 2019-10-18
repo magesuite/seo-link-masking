@@ -75,7 +75,8 @@ class FilterableAttributeOptionsProvider
                 $key = $this->urlHelper->encodeValue($option->getLabel());
                 $options[$key] = [
                     'code' => $code,
-                    'type' => $type
+                    'type' => $type,
+                    'value' => $option->getLabel()
                 ];
             }
         }

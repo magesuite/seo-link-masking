@@ -6,7 +6,7 @@ class Url extends \Magento\Framework\App\Helper\AbstractHelper
 {
     public function encodeValue($value)
     {
-        return urlencode($value);
+        return urlencode(strtolower($value));
     }
 
     public function decodeValue($value)

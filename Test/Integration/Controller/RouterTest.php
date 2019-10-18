@@ -19,7 +19,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testItSetFiltersByValues()
     {
-        $this->dispatch('/test-category/Option+1');
+        $this->dispatch('/test-category/option+1');
 
         $this->assertContains('Multiselect Attribute', $this->getResponse()->getBody());
 
@@ -38,7 +38,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testItSetFilterWithMultipleOptions()
     {
-        $this->dispatch('/test-category/Option+1--Option+2');
+        $this->dispatch('/test-category/option+1--option+2');
 
         $this->assertContains('Multiselect Attribute', $this->getResponse()->getBody());
 
