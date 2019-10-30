@@ -3,10 +3,27 @@
     <type name="Magento\Catalog\Model\Category">
         <plugin name="add_link_masking_to_category" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Category\AddLinkMaskingToCategory" />
     </type>
+    <type name="MageSuite\SeoHreflang\Block\Hreflang">
+        <plugin name="update_hreflang_url" type="MageSuite\SeoLinkMasking\Plugin\SeoHreflang\Block\Hreflang\UpdateHreflangUrl" />
+    </type>
+
     <type name="Magento\Swatches\Block\LayeredNavigation\RenderLayered">
         <arguments>
             <argument name="data" xsi:type="array">
                 <item name="template" xsi:type="string">MageSuite_SeoLinkMasking::product/layered/renderer.phtml</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="MageSuite\Opengraph\Service\TagsCollector">
+        <arguments>
+            <argument name="dataProviders" xsi:type="array">
+                <item name="category" xsi:type="array">
+                    <item name="link_masking_category_url" xsi:type="array">
+                        <item name="class" xsi:type="object">\MageSuite\SeoLinkMasking\DataProviders\CategoryUrl</item>
+                        <item name="sortOrder" xsi:type="number">40</item>
+                    </item>
+                </item>
             </argument>
         </arguments>
     </type>

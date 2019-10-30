@@ -29,18 +29,25 @@ class Router implements \Magento\Framework\App\RouterInterface
      */
     protected $filterParametersProcessor;
 
+    /**
+     * @var \Magento\Framework\Registry
+     */
+    protected $registry;
+
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\UrlRewrite\Model\UrlFinderInterface $urlFinder,
         \Magento\Framework\App\ActionFactory $actionFactory,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
-        \MageSuite\SeoLinkMasking\Model\FilterParametersProcessor $filterParametersProcessor
+        \MageSuite\SeoLinkMasking\Model\FilterParametersProcessor $filterParametersProcessor,
+        \Magento\Framework\Registry $registry
     ) {
         $this->storeManager = $storeManager;
         $this->urlFinder = $urlFinder;
         $this->actionFactory = $actionFactory;
         $this->configuration = $configuration;
         $this->filterParametersProcessor = $filterParametersProcessor;
+        $this->registry = $registry;
     }
 
     public function match(\Magento\Framework\App\RequestInterface $request)
@@ -59,8 +66,11 @@ class Router implements \Magento\Framework\App\RouterInterface
         $filterParams = substr($requestedUrl, strlen($categoryRewrite->getRequestPath()));
 
         if (empty($filterParams)) {
+            $this->registry->unregister(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY);
             return null;
         }
+
+        $this->registry->register(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY, $filterParams);
 
         $this->processUrlParameters($request, $filterParams);
 
