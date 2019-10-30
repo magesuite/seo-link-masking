@@ -52,11 +52,11 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
 
     public static function loadCategories()
     {
-        require __DIR__.'/../_files/categories.php';
+        require __DIR__ . '/../_files/categories.php';
     }
 
     public static function loadCategoriesRollback()
     {
-        require __DIR__.'/../_files/categories_rollback.php';
+        require __DIR__ . '/../_files/categories_rollback.php';
     }
 }
