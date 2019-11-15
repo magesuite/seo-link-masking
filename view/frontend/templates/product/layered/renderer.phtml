@@ -23,7 +23,10 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
      attribute-id="<?= /* @escapeNotVerified */ $swatchData['attribute_id'] ?>">
     <div class="swatch-attribute-options clearfix">
         <?php foreach ($swatchData['options'] as $option => $label): ?>
-            <?php 
+            <?php
+                if (empty($option)) {
+                    continue;
+                }
                 $swatchItemUrl = $label['link'];
                 $swatchItemHref = $isLinkMaskingEnabled ? '#' : $swatchItemUrl;
             ?>
