@@ -1,0 +1,9 @@
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="url_rewrite" resource="default" engine="innodb">
+        <index referenceId="URL_REWRITE_ENTITY_TYPE_ID" indexType="btree">
+            <column name="entity_id" />
+            <column name="entity_type" />
+        </index>
+    </table>
+</schema>
