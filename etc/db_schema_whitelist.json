@@ -1,0 +1,7 @@
+{
+    "url_rewrite": {
+        "index": {
+            "URL_REWRITE_ENTITY_ID_ENTITY_TYPE": true
+        }
+    }
+}
