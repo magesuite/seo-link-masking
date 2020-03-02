@@ -64,7 +64,7 @@ $category
     ->setDefaultSortBy('name')
     ->setIsActive(true)
     ->setPosition(1)
-    ->setAvailableSortBy(['position'])
+    ->setAvailableSortBy(['position_direction_asc'])
     ->setPostedProducts([
         444 => 10,
         445 => 11
