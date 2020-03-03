@@ -51,10 +51,6 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
 $product->reindex();
 $product->priceReindexCallback();
 
-
-$options = $objectManager->create(\MageSuite\Sorting\Model\Sorting\Options::class);
-$sortableAttributes = $options->getOptions();
-
 $category = $objectManager->create(\Magento\Catalog\Model\Category::class);
 $category->isObjectNew(true);
 $category
@@ -68,7 +64,7 @@ $category
     ->setDefaultSortBy('name')
     ->setIsActive(true)
     ->setPosition(1)
-    ->setAvailableSortBy([$sortableAttributes[0]['value']])
+    ->setAvailableSortBy("price")
     ->setPostedProducts([
         444 => 10,
         445 => 11
