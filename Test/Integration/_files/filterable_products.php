@@ -64,7 +64,7 @@ $category
     ->setDefaultSortBy('name')
     ->setIsActive(true)
     ->setPosition(1)
-    ->setAvailableSortBy(['position'])
+    ->setAvailableSortBy("price")
     ->setPostedProducts([
         444 => 10,
         445 => 11
