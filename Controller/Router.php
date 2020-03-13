@@ -64,8 +64,9 @@ class Router implements \Magento\Framework\App\RouterInterface
         }
 
         $filterParams = substr($requestedUrl, strlen($categoryRewrite->getRequestPath()));
+        $registeredFilterParams = $this->registry->registry(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY);
 
-        if (empty($filterParams)) {
+        if (empty($filterParams) || !empty($registeredFilterParams)) {
             $this->registry->unregister(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY);
             return null;
         }
