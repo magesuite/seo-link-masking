@@ -14,6 +14,8 @@ class FilterItemUrlProcessor
         'swatch' => self::ATTRIBUTE_TYPE_SWATCH
     ];
 
+    const PAGE_PARAMETER = 'p';
+
     const URL_PARAMS_DELIMITER = '?';
     const PATH_SEPARATOR = '/';
 
@@ -123,6 +125,8 @@ class FilterItemUrlProcessor
 
     protected function buildFilterUrl($requestParameters, $filtersValues)
     {
+        $requestParameters = $this->removePageParameter($requestParameters);
+
         $url = $this->url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $requestParameters]);
 
         if (empty($filtersValues)) {
@@ -218,5 +222,14 @@ class FilterItemUrlProcessor
 
         $parameters[$attributeCode] = null;
         return $parameters;
+    }
+
+    protected function removePageParameter($params)
+    {
+        if (isset($params[self::PAGE_PARAMETER])) {
+            $params[self::PAGE_PARAMETER] = null;
+        }
+
+        return $params;
     }
 }

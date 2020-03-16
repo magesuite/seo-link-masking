@@ -73,7 +73,11 @@ class Router implements \Magento\Framework\App\RouterInterface
 
         $this->registry->register(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY, $filterParams);
 
-        $this->processUrlParameters($request, $filterParams);
+        $processResult = $this->processUrlParameters($request, $filterParams);
+
+        if (!$processResult) {
+            return null;
+        }
 
         if ($categoryRewrite->getRedirectType()) {
              return null;
@@ -120,6 +124,11 @@ class Router implements \Magento\Framework\App\RouterInterface
 
         $filterParameters = $this->filterParametersProcessor->process($params);
 
+        if (count($params) != count($filterParameters)) {
+            return false;
+        }
+
         $request->setQueryValue($filterParameters);
+        return true;
     }
 }
