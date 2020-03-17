@@ -65,7 +65,7 @@ class FilterParametersProcessor
 
         foreach ($parameterOptions as $parameterOption) {
             if (!isset($options[$parameterOption])) {
-                continue;
+                return null;
             }
 
             $key = $options[$parameterOption]['code'];
