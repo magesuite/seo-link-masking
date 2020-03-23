@@ -37,11 +37,7 @@ class AdjustFilterItemUrl
         $category = $this->getCategory();
 
         if (!$this->configuration->isShortFilterUrlEnabled() || $this->isCategoryFilter($filter->getRequestVar())) {
-            return $proceed();
-        }
-
-        if (!$category) {
-            return $proceed();
+            $proceed();
         }
 
         return $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
@@ -53,10 +49,6 @@ class AdjustFilterItemUrl
         $category = $this->getCategory();
 
         if (!$this->configuration->isShortFilterUrlEnabled() || $this->isCategoryFilter($filter->getRequestVar())) {
-            return $proceed();
-        }
-
-        if (!$category) {
             return $proceed();
         }
 

@@ -47,6 +47,11 @@ class FilterableAttributesProvider
      */
     protected $storeManager;
 
+    /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Category
+     */
+    protected $categoryHelper;
+
     public function __construct(
         \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory,
         \Smile\ElasticsuiteCore\Api\Search\ContextInterface $searchContext,
@@ -55,7 +60,8 @@ class FilterableAttributesProvider
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper
     ) {
         $this->attributeCollectionFactory = $attributeCollectionFactory;
         $this->searchContext = $searchContext;
@@ -65,10 +71,13 @@ class FilterableAttributesProvider
         $this->cache = $cache;
         $this->serializer = $serializer;
         $this->storeManager = $storeManager;
+        $this->categoryHelper = $categoryHelper;
     }
 
     public function getList($currentCategory)
     {
+        $currentCategory = $this->categoryHelper->getCategoryEntityForSearchResultPage($currentCategory);
+
         $cacheKey = $this->getCacheKey($currentCategory->getId());
         $cachedData = $this->cache->load($cacheKey);
 
@@ -137,7 +146,7 @@ class FilterableAttributesProvider
         return $collection->getItems();
     }
 
-    private function getStoreId($category)
+    protected function getStoreId($category)
     {
         $storeId = $category->getStoreId();
 

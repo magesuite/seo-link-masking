@@ -21,6 +21,11 @@ class IsLinkMaskingEnabledTest extends \PHPUnit\Framework\TestCase
     protected $registry;
 
     /**
+     * @var \Magento\Framework\App\Request\Http
+     */
+    protected $request;
+
+    /**
      * @var \Magento\Catalog\Model\Layer\Filter\Attribute
      */
     protected $attributeFilter;
@@ -34,6 +39,8 @@ class IsLinkMaskingEnabledTest extends \PHPUnit\Framework\TestCase
 
         $this->registry = $this->objectManager->get(\Magento\Framework\Registry::class);
         $this->registry->register('current_category', $category);
+
+        $this->request = $this->objectManager->get(\Magento\Framework\App\Request\Http::class);
 
         $attribute = $this->objectManager->create(\Magento\Catalog\Model\Entity\Attribute::class);
         $attribute->loadByCode('catalog_product', 'attribute_with_option');
@@ -98,5 +105,27 @@ class IsLinkMaskingEnabledTest extends \PHPUnit\Framework\TestCase
         $this->registry->register('current_category', $category);
 
         $this->assertFalse($this->attributeFilter->getIsLinkMaskingEnabled());
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/default_masking_state 1
+     */
+    public function testLinkMaskingStateIsTakenFromRootCategoryOnSearchResultPage()
+    {
+        $this->assertTrue($this->attributeFilter->getIsLinkMaskingEnabled());
+
+        $this->registry->unregister('current_category');
+        $this->assertNull($this->attributeFilter->getIsLinkMaskingEnabled());
+
+        $this->request
+            ->setRouteName('catalogsearch')
+            ->setControllerName('result')
+            ->setActionName('index');
+
+        $this->assertTrue($this->attributeFilter->getIsLinkMaskingEnabled());
     }
 }

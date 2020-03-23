@@ -27,4 +27,10 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="MageSuite\SeoLinkMasking\Helper\Configuration">
+        <arguments>
+            <argument name="request" xsi:type="object">Magento\Framework\App\Request\Http\Proxy</argument>
+        </arguments>
+    </type>
 </config>

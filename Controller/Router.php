@@ -4,6 +4,8 @@ namespace MageSuite\SeoLinkMasking\Controller;
 
 class Router implements \Magento\Framework\App\RouterInterface
 {
+    const SEARCH_PAGE_URL_PARAMS = ['catalogsearch', 'result', 'index'];
+
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
@@ -57,13 +59,13 @@ class Router implements \Magento\Framework\App\RouterInterface
         }
 
         $requestedUrl = ltrim($request->getPathInfo(), '/');
-        $categoryRewrite = $this->findCategoryRewrite($requestedUrl);
+        $rewrite = $this->findRewrite($requestedUrl);
 
-        if (empty($categoryRewrite)) {
+        if (empty($rewrite)) {
             return null;
         }
 
-        $filterParams = substr($requestedUrl, strlen($categoryRewrite->getRequestPath()));
+        $filterParams = substr($requestedUrl, strlen($rewrite->getRequestPath()));
         $registeredFilterParams = $this->registry->registry(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY);
 
         if (empty($filterParams) || !empty($registeredFilterParams)) {
@@ -79,19 +81,44 @@ class Router implements \Magento\Framework\App\RouterInterface
             return null;
         }
 
-        if ($categoryRewrite->getRedirectType()) {
+        if ($rewrite->getRedirectType()) {
              return null;
         }
 
         $request->setAlias(
             \Magento\Framework\UrlInterface::REWRITE_REQUEST_PATH_ALIAS,
-            $categoryRewrite->getRequestPath()
+            $rewrite->getRequestPath()
         );
 
-        $request->setPathInfo('/' . $categoryRewrite->getTargetPath());
+        $request->setPathInfo('/' . $rewrite->getTargetPath());
         return $this->actionFactory->create(
             \Magento\Framework\App\Action\Forward::class
         );
+    }
+
+    protected function findRewrite($pathInfo)
+    {
+        $rewrite = $this->getSearchPageRewrite($pathInfo);
+        return $rewrite ?? $this->findCategoryRewrite($pathInfo);
+    }
+
+    protected function getSearchPageRewrite($pathInfo)
+    {
+        if (strpos($pathInfo, self::SEARCH_PAGE_URL_PARAMS[0]) === false) {
+            return null;
+        }
+
+        $pathInfo = rtrim($pathInfo, '/');
+        $pathParts = explode('/', $pathInfo);
+
+        $searchPageUrlParams = array_intersect(self::SEARCH_PAGE_URL_PARAMS, $pathParts);
+        $searchPageUrl = implode('/', $searchPageUrlParams);
+
+        return new \Magento\Framework\DataObject([
+            'request_path' => $searchPageUrl,
+            'target_path' => $searchPageUrl,
+            'redirect_type' => null
+        ]);
     }
 
     protected function findCategoryRewrite($pathInfo)
