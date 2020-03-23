@@ -10,6 +10,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     const CATEGORY_WITHOUT_LINK_MASKING = 777;
     const CATEGORY_WITH_LINK_MASKING = 778;
+    const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
 
     /**
      * @var \Magento\Catalog\Api\CategoryRepositoryInterface
@@ -46,7 +47,8 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             [self::CATEGORY_WITHOUT_LINK_MASKING, null],
-            [self::CATEGORY_WITH_LINK_MASKING, [1 => false, 2 => true, 3 => false]]
+            [self::CATEGORY_WITH_LINK_MASKING, [1 => false, 2 => true, 3 => false]],
+            [self::ROOT_CATEGORY_WITH_LINK_MASKING, [1 => false, 2 => true, 3 => false]]
         ];
     }
 

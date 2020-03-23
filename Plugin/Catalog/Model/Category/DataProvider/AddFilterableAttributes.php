@@ -4,8 +4,6 @@ namespace MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Category\DataProvider;
 
 class AddFilterableAttributes
 {
-    const DEFAULT_CATEGORY_LEVEL = 2;
-
     /**
      * @var \MageSuite\SeoLinkMasking\Helper\Configuration
      */
@@ -35,7 +33,7 @@ class AddFilterableAttributes
 
         $currentCategory = $dataProvider->getCurrentCategory();
 
-        if ($currentCategory->getId() === null || $currentCategory->getLevel() < self::DEFAULT_CATEGORY_LEVEL) {
+        if ($currentCategory->getId() === null) {
             $meta['search_engine_optimization']['children']['seo_link_masking']['arguments']['data']['config']['visible'] = false;
         }
 
@@ -52,7 +50,7 @@ class AddFilterableAttributes
 
         $currentCategory = $dataProvider->getCurrentCategory();
 
-        if ($currentCategory->getId() !== null && $currentCategory->getLevel() >= self::DEFAULT_CATEGORY_LEVEL) {
+        if ($currentCategory->getId() !== null) {
             $data[$currentCategory->getId()]['seo_link_masking'] = array_values($this->filterableAttributesProvider->getList($currentCategory));
         }
 

@@ -1,4 +1,6 @@
 <?php
+$rootCategoryId = 2;
+
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
 $category = $objectManager->create(\Magento\Catalog\Model\Category::class);
@@ -38,6 +40,14 @@ $category
     ->setIsActive(true)
     ->setPosition(1)
     ->setAvailableSortBy(['position'])
+    ->setSeoLinkMasking($seoLinkMasking)
+    ->save()
+    ->reindex();
+
+$category = $objectManager->create(\Magento\Catalog\Model\Category::class);
+$category->load($rootCategoryId);
+
+$category
     ->setSeoLinkMasking($seoLinkMasking)
     ->save()
     ->reindex();
