@@ -37,7 +37,7 @@ class AdjustFilterItemUrl
         $category = $this->getCategory();
 
         if (!$this->configuration->isShortFilterUrlEnabled() || $this->isCategoryFilter($filter->getRequestVar())) {
-            $proceed();
+            return $proceed();
         }
 
         return $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
