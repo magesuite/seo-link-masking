@@ -19,14 +19,21 @@ class AddLinkMaskingToSwatchData
      */
     protected $filterHelper;
 
+    /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Category
+     */
+    protected $categoryHelper;
+
     public function __construct(
         \Magento\Framework\Registry $registry,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
-        \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper
+        \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper,
+        \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper
     ) {
         $this->registry = $registry;
         $this->configuration = $configuration;
         $this->filterHelper = $filterHelper;
+        $this->categoryHelper = $categoryHelper;
     }
 
     public function afterGetSwatchData(\Magento\Swatches\Block\LayeredNavigation\RenderLayered $subject, $result)
@@ -65,7 +72,6 @@ class AddLinkMaskingToSwatchData
     protected function getCategory()
     {
         $category = $this->registry->registry('current_category');
-
-        return ($category && $category->getId()) ? $category : null;
+        return $this->categoryHelper->getCategoryEntityForSearchResultPage($category);
     }
 }
