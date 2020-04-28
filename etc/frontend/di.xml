@@ -28,6 +28,10 @@
         <plugin name="add_link_masking_to_filter_data" type="MageSuite\SeoLinkMasking\Plugin\Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute\AddLinkMaskingToFilterData" />
     </type>
 
+    <type name="Magento\Theme\Block\Html\Pager">
+        <plugin name="add_link_masking_to_pagination" type="MageSuite\SeoLinkMasking\Plugin\Theme\Block\Html\AddLinkMaskingToPager" />
+    </type>
+
 </config>
 
 
