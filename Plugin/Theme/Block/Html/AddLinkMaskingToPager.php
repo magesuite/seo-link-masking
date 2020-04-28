@@ -17,7 +17,7 @@ class AddLinkMaskingToPager
 
     public function aroundGetPagerUrl(\Magento\Theme\Block\Html\Pager $subject, \Closure $proceed, $params = [])
     {
-        if (!$this->configuration->isLinkMaskingEnabled()) {
+        if (!$this->configuration->isLinkMaskingEnabled() || $subject->getRequest()->getFullActionName() !== self::FULL_CATEGORY_ACTION_NAME) {
             return $proceed($params);
         }
         return $this->getLinkMaskedPagerUrl($subject, $params);
@@ -25,10 +25,6 @@ class AddLinkMaskingToPager
 
     protected function getLinkMaskedPagerUrl(\Magento\Theme\Block\Html\Pager $pager, $params = [])
     {
-        if ($pager->getRequest()->getFullActionName() !== self::FULL_CATEGORY_ACTION_NAME) {
-            return $pager::getPagerUrl($params);
-        }
-
         $url = $pager->getRequest()->getUriString();
 
         $fragment = $pager->getFragment();
