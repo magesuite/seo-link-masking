@@ -29,12 +29,12 @@ class AddLinkMaskingToPager
 
         $fragment = $pager->getFragment();
         $paginationParam = $pager->getPageVarName();
-        $page = isset($params[$paginationParam]) ? intval($params[$paginationParam]) : null;
+        $page = isset($params[$paginationParam]) ? $params[$paginationParam] : null;
 
         $query = [];
         parse_str(parse_url($url, PHP_URL_QUERY), $query);
 
-        if ($page === null || $page === 1) {
+        if ($page === null || intval($page) === 1) {
             unset($query[$paginationParam]);
         } else {
             $query[$paginationParam] = $page;
