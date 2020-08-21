@@ -17,7 +17,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
      */
     protected $categoryRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->categoryRepository = \Magento\TestFramework\ObjectManager::getInstance()
             ->create(\Magento\Catalog\Api\CategoryRepositoryInterface::class);

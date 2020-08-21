@@ -14,7 +14,7 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected $formKey;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
