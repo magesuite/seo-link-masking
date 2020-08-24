@@ -21,7 +21,9 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->dispatch('/test-category/option+1');
 
-        $this->assertContains('Multiselect Attribute', $this->getResponse()->getBody());
+        $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
+
+        $this->$assertContains('Multiselect Attribute', $this->getResponse()->getBody());
 
         $parameters = $this->getRequest()->getParams();
 
@@ -40,7 +42,9 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $this->dispatch('/test-category/option+1--option+2');
 
-        $this->assertContains('Multiselect Attribute', $this->getResponse()->getBody());
+        $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
+
+        $this->$assertContains('Multiselect Attribute', $this->getResponse()->getBody());
 
         $parameters = $this->getRequest()->getParams();
 

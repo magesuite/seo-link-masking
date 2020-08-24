@@ -23,7 +23,9 @@ class UpdateMetaRobotsTagTest extends \Magento\TestFramework\TestCase\AbstractCo
     {
         $this->dispatch('/test-category/option+1');
 
-        $this->assertContains(self::ROBOTS_TAG_INDEX_FOLLOW, $this->getResponse()->getBody());
+        $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
+
+        $this->$assertContains(self::ROBOTS_TAG_INDEX_FOLLOW, $this->getResponse()->getBody());
     }
 
     /**
@@ -39,9 +41,10 @@ class UpdateMetaRobotsTagTest extends \Magento\TestFramework\TestCase\AbstractCo
     {
         $this->dispatch('/test-category/option+1--option+2');
 
-        $this->assertContains('Multiselect Attribute', $this->getResponse()->getBody());
+        $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
 
-        $this->assertContains(\MageSuite\SeoLinkMasking\Observer\UpdateMetaRobotsTag::ROBOTS_TAG_NOINDEX_FOLLOW, $this->getResponse()->getBody());
+        $this->$assertContains('Multiselect Attribute', $this->getResponse()->getBody());
+        $this->$assertContains(\MageSuite\SeoLinkMasking\Observer\UpdateMetaRobotsTag::ROBOTS_TAG_NOINDEX_FOLLOW, $this->getResponse()->getBody());
     }
 
     public static function loadFilterableProducts()
