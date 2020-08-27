@@ -2,6 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="MageSuite_SeoLinkMasking" setup_version="1.0.1">
         <sequence>
+            <module name="MageSuite_ServerSideSwatches" />
             <module name="Smile_ElasticsuiteCatalog" />
             <module name="MageSuite_SeoMetaRobots" />
         </sequence>
