@@ -29,10 +29,16 @@ class FilterParametersProcessor
         $this->configuration = $configuration;
     }
 
-    public function process($parameters)
+    public function process($urlParameters, $storeId = null)
     {
-        $options = $this->filterableAttributeOptionsProvider->getOptions();
+        $parameters = ltrim($urlParameters, '/');
+        $parameters = explode('/', $parameters);
 
+        if(empty($parameters)){
+            return false;
+        }
+
+        $options = $this->filterableAttributeOptionsProvider->getOptions($storeId);
         $filterParameters = [];
 
         foreach ($parameters as $parameter) {
@@ -45,7 +51,35 @@ class FilterParametersProcessor
             $filterParameters[$preparedParameter['key']] = $preparedParameter['value'];
         }
 
+        if (count($parameters) != count($filterParameters) ) {
+            return false;
+        }
+
         return $filterParameters;
+    }
+
+    public function processRewrite($urlParameters, $oldStoreId, $targetStoreId)
+    {
+        $filterParameters = $this->process($urlParameters, $oldStoreId);
+
+        if(empty($filterParameters)){
+            return false;
+        }
+
+        foreach ($filterParameters as $code => $value) {
+            $filterParameters[$code] = $this->filterableAttributeOptionsProvider->rewriteOption($code, $value, $oldStoreId, $targetStoreId);
+        }
+
+        return $filterParameters;
+    }
+
+    public function toUrl($filterParameters){
+        foreach($filterParameters as $code => $values){
+            $value = implode($this->configuration->getMultiselectOptionSeparator(), $values);
+            $filterParameters[$code] = $this->urlHelper->encodeValue($value);
+        }
+
+        return '/' . implode('/', $filterParameters);
     }
 
     protected function prepareParameter($parameter, $options)

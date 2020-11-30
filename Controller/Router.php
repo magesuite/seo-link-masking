@@ -4,17 +4,10 @@ namespace MageSuite\SeoLinkMasking\Controller;
 
 class Router implements \Magento\Framework\App\RouterInterface
 {
-    const SEARCH_PAGE_URL_PARAMS = ['catalogsearch', 'result', 'index'];
-
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var \MageSuite\SeoLinkMasking\Service\UrlRewriteFinder
      */
-    protected $storeManager;
-
-    /**
-     * @var \Magento\UrlRewrite\Model\UrlFinderInterface
-     */
-    protected $urlFinder;
+    protected $urlRewriteFinder;
 
     /**
      * @var \Magento\Framework\App\ActionFactory
@@ -37,15 +30,13 @@ class Router implements \Magento\Framework\App\RouterInterface
     protected $registry;
 
     public function __construct(
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\UrlRewrite\Model\UrlFinderInterface $urlFinder,
+        \MageSuite\SeoLinkMasking\Service\UrlRewriteFinder $urlRewriteFinder,
         \Magento\Framework\App\ActionFactory $actionFactory,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \MageSuite\SeoLinkMasking\Model\FilterParametersProcessor $filterParametersProcessor,
         \Magento\Framework\Registry $registry
     ) {
-        $this->storeManager = $storeManager;
-        $this->urlFinder = $urlFinder;
+        $this->urlRewriteFinder = $urlRewriteFinder;
         $this->actionFactory = $actionFactory;
         $this->configuration = $configuration;
         $this->filterParametersProcessor = $filterParametersProcessor;
@@ -59,7 +50,7 @@ class Router implements \Magento\Framework\App\RouterInterface
         }
 
         $requestedUrl = ltrim($request->getPathInfo(), '/');
-        $rewrite = $this->findRewrite($requestedUrl);
+        $rewrite = $this->urlRewriteFinder->findRewrite($requestedUrl);
 
         if (empty($rewrite)) {
             return null;
@@ -96,66 +87,16 @@ class Router implements \Magento\Framework\App\RouterInterface
         );
     }
 
-    protected function findRewrite($pathInfo)
-    {
-        $rewrite = $this->getSearchPageRewrite($pathInfo);
-        return $rewrite ?? $this->findCategoryRewrite($pathInfo);
-    }
-
-    protected function getSearchPageRewrite($pathInfo)
-    {
-        if (strpos($pathInfo, self::SEARCH_PAGE_URL_PARAMS[0]) === false) {
-            return null;
-        }
-
-        $pathInfo = rtrim($pathInfo, '/');
-        $pathParts = explode('/', $pathInfo);
-
-        $searchPageUrlParams = array_intersect(self::SEARCH_PAGE_URL_PARAMS, $pathParts);
-        $searchPageUrl = implode('/', $searchPageUrlParams);
-
-        return new \Magento\Framework\DataObject([
-            'request_path' => $searchPageUrl,
-            'target_path' => $searchPageUrl,
-            'redirect_type' => null
-        ]);
-    }
-
-    protected function findCategoryRewrite($pathInfo)
-    {
-        $pathParts = explode('/', $pathInfo);
-
-        $storeId = $this->storeManager->getStore()->getId();
-        $rewrite = null;
-
-        while (empty($rewrite) && !empty($pathParts)) {
-            $rewrite = $this->getRewrite(implode('/', $pathParts), $storeId);
-            array_pop($pathParts);
-        }
-
-        return $rewrite;
-    }
-
-    protected function getRewrite($requestPath, $storeId)
-    {
-        return $this->urlFinder->findOneByData([
-            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::REQUEST_PATH => $requestPath,
-            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::STORE_ID => $storeId,
-        ]);
-    }
-
     protected function processUrlParameters($request, $params)
     {
-        $params = ltrim($params, '/');
-        $params = explode('/', $params);
-
         $filterParameters = $this->filterParametersProcessor->process($params);
 
-        if (count($params) != count($filterParameters)) {
+        if(empty($filterParameters)) {
             return false;
         }
 
         $request->setQueryValue($filterParameters);
+
         return true;
     }
 }

@@ -46,9 +46,9 @@ class FilterableAttributeOptionsProvider
         $this->urlHelper = $urlHelper;
     }
 
-    public function getOptions()
+    public function getOptions($storeId = null)
     {
-        $cacheKey = $this->getCacheKey();
+        $cacheKey = $this->getCacheKey($storeId);
         $cachedData = $this->cache->load($cacheKey);
 
         if (!empty($cachedData)) {
@@ -64,6 +64,10 @@ class FilterableAttributeOptionsProvider
 
         foreach ($attributeCollection as $attribute) {
             /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attribute */
+            if(!empty($storeId)) {
+                $attribute->setStoreId($storeId);
+            }
+
             $code = $attribute->getAttributeCode();
             $type = $attribute->getFrontendInput();
 
@@ -86,8 +90,46 @@ class FilterableAttributeOptionsProvider
         return $options;
     }
 
-    private function getCacheKey()
+    private function getCacheKey($storeId = null)
     {
-        return sprintf(self::CACHE_TAG, $this->storeManager->getStore()->getId());
+        if(empty($storeId)) {
+            $storeId = $this->storeManager->getStore()->getId();
+        }
+
+        return sprintf(self::CACHE_TAG, $storeId);
+    }
+
+    public function rewriteOption($code, $oldValues, $oldStoreId, $targetStoreId){
+        if(!is_array($oldValues)){
+            $oldValues = [$oldValues];
+        }
+
+        $attributeCollection = $this->attributeCollectionFactory->create();
+        $attributeCollection
+            ->addFieldToFilter(\Magento\Catalog\Api\Data\EavAttributeInterface::IS_FILTERABLE, true)
+            ->addFieldToFilter(\Magento\Eav\Api\Data\AttributeInterface::FRONTEND_INPUT, \MageSuite\SeoLinkMasking\Service\FilterItemUrlProcessor::$filterableAttributeTypes)
+            ->addFieldToFilter(\Magento\Catalog\Api\Data\EavAttributeInterface::ATTRIBUTE_CODE, $code)
+            ->setPageSize(1);
+
+        $attribute = $attributeCollection->getFirstItem();
+        $attribute->setStoreId($oldStoreId);
+        $options = [];
+
+        foreach ($attribute->getOptions() as $option) {
+            if(in_array($option->getLabel(), $oldValues)){
+                $options[] = $option->getValue();
+            }
+        }
+
+        $attribute->setStoreId($targetStoreId);
+        $newValues = [];
+
+        foreach ($attribute->getOptions() as $option) {
+            if(in_array($option->getValue(), $options)){
+                $newValues[] = $option->getLabel();
+            }
+        }
+
+        return $newValues;
     }
 }
