@@ -33,4 +33,14 @@
             <argument name="request" xsi:type="object">Magento\Framework\App\Request\Http\Proxy</argument>
         </arguments>
     </type>
+
+
+    <type name="Magento\Store\Model\StoreSwitcher">
+        <arguments>
+            <argument name="storeSwitchers" xsi:type="array">
+                <item name="rewriteSeoLinkMasking" xsi:type="object">MageSuite\SeoLinkMasking\Model\StoreSwitcher\RewriteUrl</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>
