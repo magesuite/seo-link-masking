@@ -26,7 +26,7 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->storeSwitcher = $this->objectManager->get(\Magento\Store\Model\StoreSwitcher::class);
