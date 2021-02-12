@@ -6,7 +6,9 @@
     "OSL-3.0",
     "AFL-3.0"
   ],
-  "require": {},
+  "require": {
+      "creativestyle/magesuite-seo-meta-robots": "^1.0.0"
+  },
   "autoload": {
     "files": [ "registration.php" ],
     "psr-4": {
