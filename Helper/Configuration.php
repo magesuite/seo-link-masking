@@ -66,6 +66,11 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->request->getFullActionName() == self::SEARCH_RESULT_PAGE_FULL_ACTION_NAME;
     }
 
+    public function isUtfFriendlyModeEnabled()
+    {
+        return (bool)$this->getConfig()->getIsUtfFriendlyModeEnabled();
+    }
+
     protected function getConfig()
     {
         if ($this->config === null) {
