@@ -10,6 +10,11 @@ class FilterParametersProcessor
     protected $filterableAttributeOptionsProvider;
 
     /**
+     * @var \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter
+     */
+    protected $filtrableAttributeUtfFriendlyConverter;
+
+    /**
      * @var \MageSuite\SeoLinkMasking\Helper\Url
      */
     protected $urlHelper;
@@ -21,10 +26,12 @@ class FilterParametersProcessor
 
     public function __construct(
         \MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider $filterableAttributeOptionsProvider,
+        \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter,
         \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
     ) {
         $this->filterableAttributeOptionsProvider = $filterableAttributeOptionsProvider;
+        $this->filtrableAttributeUtfFriendlyConverter = $filtrableAttributeUtfFriendlyConverter;
         $this->urlHelper = $urlHelper;
         $this->configuration = $configuration;
     }
@@ -86,6 +93,13 @@ class FilterParametersProcessor
     {
         if (strpos($parameter, $this->configuration->getMultiselectOptionSeparator()) === false) {
             if (!isset($options[$parameter])) {
+                if($this->configuration->isUtfFriendlyModeEnabled()) {
+                    $optionsConverted = $this->filtrableAttributeUtfFriendlyConverter->convertOptions($options);
+
+                    if (isset($optionsConverted[$parameter])) {
+                        return ['key' => $optionsConverted[$parameter]['code'], 'value' => $optionsConverted[$parameter]['value']];
+                    }
+                }
                 return null;
             }
 
@@ -99,6 +113,17 @@ class FilterParametersProcessor
 
         foreach ($parameterOptions as $parameterOption) {
             if (!isset($options[$parameterOption])) {
+                if($this->configuration->isUtfFriendlyModeEnabled()) {
+                    $optionsConverted = $this->filtrableAttributeUtfFriendlyConverter->convertOptions($options);
+
+                    if(!isset($optionsConverted[$parameterOption])) {
+                        return null;
+                    }
+
+                    $key = $optionsConverted[$parameterOption]['code'];
+                    $values[] = $optionsConverted[$parameterOption]['value'];
+                    continue;
+                }
                 return null;
             }
 

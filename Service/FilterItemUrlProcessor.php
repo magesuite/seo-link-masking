@@ -38,6 +38,11 @@ class FilterItemUrlProcessor
     protected $filterableAttributesProvider;
 
     /**
+     * @var \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter
+     */
+    protected $filtrableAttributeUtfFriendlyConverter;
+
+    /**
      * @var \MageSuite\SeoLinkMasking\Helper\Url
      */
     protected $urlHelper;
@@ -56,12 +61,14 @@ class FilterItemUrlProcessor
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\UrlInterface $url,
         \MageSuite\SeoLinkMasking\Service\FilterableAttributesProvider $filterableAttributesProvider,
+        \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter,
         \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
     ) {
         $this->request = $request;
         $this->url = $url;
         $this->filterableAttributesProvider = $filterableAttributesProvider;
+        $this->filtrableAttributeUtfFriendlyConverter = $filtrableAttributeUtfFriendlyConverter;
         $this->urlHelper = $urlHelper;
         $this->configuration = $configuration;
     }
@@ -134,6 +141,10 @@ class FilterItemUrlProcessor
         }
 
         $urlParts = explode(self::URL_PARAMS_DELIMITER, $url);
+
+        if($this->configuration->isUtfFriendlyModeEnabled()) {
+            $filtersValues = $this->filtrableAttributeUtfFriendlyConverter->convertFilterParams($filtersValues);
+        }
 
         $url = rtrim($urlParts[0], self::PATH_SEPARATOR) . self::PATH_SEPARATOR . implode(self::PATH_SEPARATOR, $filtersValues);
 
