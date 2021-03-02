@@ -193,11 +193,6 @@ class FilterItemUrlProcessor
             return $parameters;
         }
 
-        if ($attributeType === self::ATTRIBUTE_TYPE_SELECT) {
-            $parameters[$attributeCode] = null;
-            return $parameters;
-        }
-
         if (!is_array($parameters[$attributeCode])) {
             $parameters[$attributeCode] = [$parameters[$attributeCode]];
         }
