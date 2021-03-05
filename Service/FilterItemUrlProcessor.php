@@ -22,6 +22,8 @@ class FilterItemUrlProcessor
     const MODE_ADD = 'add';
     const MODE_REMOVE = 'remove';
 
+    const CATEGORY_URL_CACHE_TAG = 'category_url_%s_%s';
+
     /**
      * @var \Magento\Framework\App\RequestInterface
      */
@@ -57,13 +59,37 @@ class FilterItemUrlProcessor
      */
     protected $filterableAttributes = [];
 
+    /**
+     * @var \Magento\Framework\App\CacheInterface
+     */
+    protected $cache;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
+     * @var \Magento\Framework\Serialize\SerializerInterface
+     */
+    protected $serializer;
+
+    /**
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
+     */
+    protected $categoryRepository;
+
     public function __construct(
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\UrlInterface $url,
         \MageSuite\SeoLinkMasking\Service\FilterableAttributesProvider $filterableAttributesProvider,
         \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter,
         \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
+        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        \Magento\Framework\App\CacheInterface $cache,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
     ) {
         $this->request = $request;
         $this->url = $url;
@@ -71,6 +97,10 @@ class FilterItemUrlProcessor
         $this->filtrableAttributeUtfFriendlyConverter = $filtrableAttributeUtfFriendlyConverter;
         $this->urlHelper = $urlHelper;
         $this->configuration = $configuration;
+        $this->cache = $cache;
+        $this->storeManager = $storeManager;
+        $this->serializer = $serializer;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function prepareItemUrl($filter, $category, $filterValue)
@@ -127,14 +157,14 @@ class FilterItemUrlProcessor
             $filtersValues[] = $value;
         }
 
-        return $this->buildFilterUrl($requestParameters, $filtersValues);
+        return $this->buildFilterUrl($requestParameters, $filtersValues, $category);
     }
 
-    protected function buildFilterUrl($requestParameters, $filtersValues)
+    protected function buildFilterUrl($requestParameters, $filtersValues, $category)
     {
         $requestParameters = $this->removePageParameter($requestParameters);
 
-        $url = $this->url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $requestParameters]);
+        $url = $this->getUrl($category, $requestParameters);
 
         if (empty($filtersValues)) {
             return $url;
@@ -237,5 +267,45 @@ class FilterItemUrlProcessor
         }
 
         return $params;
+    }
+
+    public function getCategoryUrl($category)
+    {
+        if ($category) {
+            $categoryId = $category->getId();
+        } else {
+            $categoryId = $this->request->getParam('cat');
+        }
+
+        $categoryUrlCacheKey = $this->getCategoryUrlCacheKey($categoryId);
+        $categoryUrlCacheData = $this->cache->load($categoryUrlCacheKey);
+
+        if ($categoryUrlCacheData) {
+            return $this->serializer->unserialize($categoryUrlCacheData);
+        }
+
+        if (!$category) {
+            $category = $this->categoryRepository->get($categoryId, $this->storeManager->getStore()->getId());
+        }
+
+        $this->cache->save($this->serializer->serialize($category->getUrl()), $categoryUrlCacheKey, [sprintf('%s_%s', \Magento\Catalog\Model\Category::CACHE_TAG, $categoryId)]);
+
+        return $category->getUrl();
+    }
+
+    public function getCategoryUrlCacheKey($categoryId)
+    {
+        return sprintf(self::CATEGORY_URL_CACHE_TAG, $categoryId, $this->storeManager->getStore()->getId());
+    }
+
+    public function getUrl($category, $requestParameters)
+    {
+        $categoryUrl = $this->getCategoryUrl($category);
+
+        if ($this->request->getFullActionName() == 'catalog_navigation_filter_ajax') {
+            return $categoryUrl;
+        }
+
+        return $this->url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $requestParameters]);
     }
 }
