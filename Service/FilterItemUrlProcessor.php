@@ -70,11 +70,6 @@ class FilterItemUrlProcessor
     protected $storeManager;
 
     /**
-     * @var \Magento\Framework\Serialize\SerializerInterface
-     */
-    protected $serializer;
-
-    /**
      * @var \Magento\Catalog\Api\CategoryRepositoryInterface
      */
     protected $categoryRepository;
@@ -88,7 +83,6 @@ class FilterItemUrlProcessor
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
     ) {
         $this->request = $request;
@@ -99,7 +93,6 @@ class FilterItemUrlProcessor
         $this->configuration = $configuration;
         $this->cache = $cache;
         $this->storeManager = $storeManager;
-        $this->serializer = $serializer;
         $this->categoryRepository = $categoryRepository;
     }
 
@@ -281,14 +274,14 @@ class FilterItemUrlProcessor
         $categoryUrlCacheData = $this->cache->load($categoryUrlCacheKey);
 
         if ($categoryUrlCacheData) {
-            return $this->serializer->unserialize($categoryUrlCacheData);
+            return $categoryUrlCacheData;
         }
 
         if (!$category) {
             $category = $this->categoryRepository->get($categoryId, $this->storeManager->getStore()->getId());
         }
 
-        $this->cache->save($this->serializer->serialize($category->getUrl()), $categoryUrlCacheKey, [sprintf('%s_%s', \Magento\Catalog\Model\Category::CACHE_TAG, $categoryId)]);
+        $this->cache->save($category->getUrl(), $categoryUrlCacheKey, [sprintf('%s_%s', \Magento\Catalog\Model\Category::CACHE_TAG, $categoryId)]);
 
         return $category->getUrl();
     }

@@ -2,6 +2,8 @@
 
 require __DIR__ . '/multiselect_attribute.php';
 
+\Magento\TestFramework\Workaround\Override\Fixture\Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/configurable_products_with_custom_attribute_layered_navigation.php');
+
 $defaultStoreId = 1;
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -84,3 +86,19 @@ $rewrite
     ->setStoreId($defaultStoreId);
 
 $rewriteResource->save($rewrite);
+
+/** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
+$productRepository = $objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+
+$product = $productRepository->get('configurable_12345');
+
+$product->setCategoryIds([333]);
+
+$productRepository->save($product);
+
+
+$product = $productRepository->get('configurable');
+
+$product->setCategoryIds([333]);
+
+$productRepository->save($product);
