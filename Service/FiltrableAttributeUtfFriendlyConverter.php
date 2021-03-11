@@ -42,6 +42,6 @@ class FiltrableAttributeUtfFriendlyConverter
             array_values($convertTable),
             $filteredValue);
 
-        return $utfFriedlyParameter;
+        return urlencode($utfFriedlyParameter);
     }
 }
