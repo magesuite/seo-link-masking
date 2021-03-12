@@ -52,6 +52,16 @@ class FilterableAttributesProvider
      */
     protected $categoryHelper;
 
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
+     */
+    protected $categoryRepository;
+
     public function __construct(
         \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory,
         \Smile\ElasticsuiteCore\Api\Search\ContextInterface $searchContext,
@@ -61,7 +71,9 @@ class FilterableAttributesProvider
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper
+        \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper,
+        \Magento\Framework\App\RequestInterface $request,
+        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
     ) {
         $this->attributeCollectionFactory = $attributeCollectionFactory;
         $this->searchContext = $searchContext;
@@ -72,17 +84,29 @@ class FilterableAttributesProvider
         $this->serializer = $serializer;
         $this->storeManager = $storeManager;
         $this->categoryHelper = $categoryHelper;
+        $this->request = $request;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function getList($currentCategory)
     {
         $currentCategory = $this->categoryHelper->getCategoryEntityForSearchResultPage($currentCategory);
 
-        $cacheKey = $this->getCacheKey($currentCategory->getId());
+        if ($currentCategory) {
+            $categoryId = $currentCategory->getId();
+        } else {
+            $categoryId = $this->request->getParam('cat');
+        }
+
+        $cacheKey = $this->getCacheKey($categoryId);
         $cachedData = $this->cache->load($cacheKey);
 
         if (!empty($cachedData)) {
             return $this->serializer->unserialize($this->cache->load($cacheKey));
+        }
+
+        if (!$currentCategory) {
+            $currentCategory = $this->categoryRepository->get($categoryId, $this->storeManager->getStore()->getId());
         }
 
         $attributesList = [];
