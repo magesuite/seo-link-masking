@@ -40,6 +40,7 @@ class UpdateHreflangUrl
     protected function buildUrlMaskFromQueryParams($queryParams)
     {
         $linkMaskingParameters = '';
+        $separator = $this->configuration->getMultiselectOptionSeparator();
         foreach ($queryParams as $param)
         {
             if(!is_array($param)) {
@@ -48,7 +49,7 @@ class UpdateHreflangUrl
                 continue;
             }
 
-            $multiParam = '/'.implode('-',$param);
+            $multiParam = '/'.implode($separator,$param);
             $linkMaskingParameters = $linkMaskingParameters.$multiParam;
 
         }
