@@ -41,11 +41,7 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
 
         $response = json_decode($this->getResponse()->getBody(), true);
 
-        $i = 1;
-        foreach ($response as $item) {
-            $this->assertEquals('http://localhost/index.php/main-category.html/option+' . $i, $item['url']);
-            $i++;
-        }
+        $this->assertEquals('http://localhost/index.php/main-category.html/option+2', $response[0]['url']);
     }
 
     public static function loadFilterableProducts()
