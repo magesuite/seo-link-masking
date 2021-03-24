@@ -293,8 +293,6 @@ class FilterItemUrlProcessor
 
     public function getUrl($category, $requestParameters)
     {
-        $categoryUrl = $this->getCategoryUrl($category);
-
         if ($this->request->getFullActionName() == 'catalog_navigation_filter_ajax') {
             $categoryUrl = $this->getCategoryUrl($category);
             return $categoryUrl;
