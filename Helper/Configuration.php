@@ -9,6 +9,8 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     const SEARCH_RESULT_PAGE_FULL_ACTION_NAME = 'catalogsearch_result_index';
 
+    const XML_PATH_SHOW_SWATCH_TOOLTIP = 'catalog/frontend/show_swatch_tooltip';
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -80,5 +82,10 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return $this->config;
+    }
+
+    public function canShowSwatchTooltip()
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_SHOW_SWATCH_TOOLTIP, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

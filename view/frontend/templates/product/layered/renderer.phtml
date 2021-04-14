@@ -2,7 +2,7 @@
 /**
  * Template has been overwritten in order to:
  * 1. Implement PRG (Post-Redirect-Get) for facet navigation links masking
- * NOTE: This file is a copy of: 
+ * NOTE: This file is a copy of:
  * `vendor/magento/module-swatches/view/frontend/templates/product/layered/renderer.phtml`
  */
 
@@ -10,10 +10,11 @@
 
 /** @var $block \Magento\Swatches\Block\LayeredNavigation\RenderLayered */
 ?>
-<?php 
+<?php
 $swatchData = $block->getSwatchData();
 // Post-Redirect-Get
-$postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+$postDataHelper = $this->helper(\Magento\Framework\Data\Helper\PostHelper::class);
+$configurationHelper = $this->helper(\MageSuite\SeoLinkMasking\Helper\Configuration::class);
 $isLinkMaskingEnabled = $swatchData['is_link_masking_enabled'];
 $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
 ?>
@@ -92,10 +93,12 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
     </div>
 </div>
 
-<script>
-    require(["jquery", "Magento_Swatches/js/swatch-renderer"], function ($) {
-        $('.swatch-layered.<?= /* @escapeNotVerified */ $swatchData['attribute_code'] ?>')
-            .find('[option-type="1"], [option-type="2"], [option-type="0"], [option-type="3"]')
-            .SwatchRendererTooltip();
-    });
-</script>
+<?php if ($configurationHelper->canShowSwatchTooltip()):?>
+    <script>
+        require(["jquery", "Magento_Swatches/js/swatch-renderer"], function ($) {
+            $('.swatch-layered.<?= /* @escapeNotVerified */ $swatchData['attribute_code'] ?>')
+                .find('[option-type="1"], [option-type="2"], [option-type="0"], [option-type="3"]')
+                .SwatchRendererTooltip();
+        });
+    </script>
+<?php endif;?>
