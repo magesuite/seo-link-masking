@@ -294,8 +294,12 @@ class FilterItemUrlProcessor
     public function getUrl($category, $requestParameters)
     {
         if ($this->request->getFullActionName() == 'catalog_navigation_filter_ajax') {
-            $categoryUrl = $this->getCategoryUrl($category);
-            return $categoryUrl;
+            if ($this->request->getParam('cat')) {
+                return $this->getCategoryUrl($category);
+            } else {
+                $params = isset($requestParameters['q']) ? ['q' => $requestParameters['q']] : [];
+                return $this->url->getUrl('catalogsearch/result/index', ['_current' => false, '_use_rewrite' => true, '_query' => $params]);
+            }
         }
 
         return $this->url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $requestParameters]);

@@ -46,6 +46,25 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
         $this->assertTrue($urlContainPath);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
+     * @magentoDataFixture loadFilterableProducts
+     */
+    public function testLinkMaskingGetCorrectCategoryUrlSearchResult()
+    {
+        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
+
+        $response = json_decode($this->getResponse()->getBody(), true);
+
+        $urlContainPath = strpos($response[0]['url'], 'http://localhost/index.php/catalogsearch/result/index/option') !== false;
+
+        $this->assertTrue($urlContainPath);
+    }
+
     public static function loadFilterableProducts()
     {
         require __DIR__.'/../_files/filterable_products.php';
