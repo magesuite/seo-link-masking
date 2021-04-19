@@ -35,11 +35,17 @@ class Category
             return $category;
         }
 
+        $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
+        $rootCategory = $this->categoryRepository->get($rootCategoryId);
+
+        if ($this->configuration->isSearchResultPageAjaxFilterCall()) {
+            return $rootCategory;
+        }
+
         if (!$this->configuration->isSearchResultPage()) {
             return null;
         }
 
-        $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
-        return $this->categoryRepository->get($rootCategoryId);
+        return $rootCategory;
     }
 }

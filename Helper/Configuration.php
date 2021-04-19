@@ -9,6 +9,8 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     const SEARCH_RESULT_PAGE_FULL_ACTION_NAME = 'catalogsearch_result_index';
 
+    const AJAX_FILTER_FULL_ACTION_NAME = 'catalog_navigation_filter_ajax';
+
     const XML_PATH_SHOW_SWATCH_TOOLTIP = 'catalog/frontend/show_swatch_tooltip';
 
     /**
@@ -66,6 +68,11 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
     public function isSearchResultPage()
     {
         return $this->request->getFullActionName() == self::SEARCH_RESULT_PAGE_FULL_ACTION_NAME;
+    }
+
+    public function isSearchResultPageAjaxFilterCall()
+    {
+        return !$this->request->getParam('cat') && ($this->request->getFullActionName() == self::AJAX_FILTER_FULL_ACTION_NAME);
     }
 
     public function isUtfFriendlyModeEnabled()
