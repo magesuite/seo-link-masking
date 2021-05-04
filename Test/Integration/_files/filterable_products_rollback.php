@@ -1,7 +1,4 @@
 <?php
-
-require __DIR__ . '/multiselect_attribute_rollback.php';
-
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
 $registry = $objectManager->get(\Magento\Framework\Registry::class);
