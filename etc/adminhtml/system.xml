@@ -39,6 +39,16 @@
                         <![CDATA[When enabled, filters in URL will contain only the value, without the key. Example: "domain.com/category?color=blue&size=XS" before, "domain.com/category/blue/XS" after. <strong style="color:red">Warning</strong>: Do not use this option when attributes contain the same values, like "color=<span style="color:blue">blue</span>" and "print_color=<span style="color:blue">blue</span>".]]>
                     </comment>
                 </field>
+                <field id="enable_filter_params_in_canonical" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable filter params in canonical tag</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[When enabled, canonical tag will contain filter params. Example: "domain.com/category" before, "domain.com/category/blue/XS" after. ]]>
+                    </comment>
+                    <depends>
+                        <field id="is_short_filter_url_enabled">1</field>
+                    </depends>
+                </field>
                 <field id="multiselect_option_separator" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Option Separator</label>
                     <comment>
