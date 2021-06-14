@@ -60,7 +60,7 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return (bool)$this->getConfig()->getIsShortFilterUrlEnabled();
     }
 
-    public function isEnableFilterParamsInCanonical()
+    public function areFilterParamsInCanonicalEnabled()
     {
         return (bool)$this->getConfig()->getEnableFilterParamsInCanonical();
     }

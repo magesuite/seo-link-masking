@@ -29,19 +29,18 @@ class AddFilterParamsToCanonicalLink
         $this->urlBuilder = $urlBuilder;
         $this->configurationHelper = $configurationHelper;
     }
-
-    public function aroundAddRemotePageAsset(\Magento\Framework\View\Page\Config $subject, callable $proceed, ...$args)
+    public function aroundAddRemotePageAsset(\Magento\Framework\View\Page\Config $subject, callable $proceed, $url, $contentType, array $properties = [], $name = null)
     {
-        if (!isset($args[1])) {
-            $proceed(...$args);
+        if (empty($url)) {
+            return $proceed($url, $contentType, $properties, $name);
         }
 
-        if ($this->request->getFullActionName() === self::CATALOG_CATEGORY_VIEW_LAYOUT_HANDLE && $args[1] === 'canonical' && $this->configurationHelper->isEnableFilterParamsInCanonical()) {
-            $args[0] = urldecode($this->getCurrentUrlWithoutParams());
-            $args[0] = str_replace(' ', '+', $args[0]);
-            $proceed(...$args);
+        if ($this->request->getFullActionName() === self::CATALOG_CATEGORY_VIEW_LAYOUT_HANDLE && $contentType === 'canonical' && $this->configurationHelper->areFilterParamsInCanonicalEnabled()) {
+            $url = urldecode($this->getCurrentUrlWithoutParams());
+            $url = str_replace(' ', '+', $url);
+            return $proceed($url, $contentType, $properties, $name);
         } else {
-            $proceed(...$args);
+            return $proceed($url, $contentType, $properties, $name);
         }
     }
 
