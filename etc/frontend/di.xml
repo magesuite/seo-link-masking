@@ -32,6 +32,9 @@
         <plugin name="add_link_masking_to_pagination" type="MageSuite\SeoLinkMasking\Plugin\Theme\Block\Html\AddLinkMaskingToPager" />
     </type>
 
+    <type name="\Magento\Framework\View\Page\Config">
+        <plugin name="add_filter_params_to_canonical_link" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Block\Category\View\AddFilterParamsToCanonicalLink" sortOrder="10" />
+    </type>
 </config>
 
 
