@@ -91,6 +91,10 @@ class FilterParametersProcessor
 
     protected function prepareParameter($parameter, $options)
     {
+        if (empty($parameter)) {
+            return null;
+        }
+        
         if (strpos($parameter, $this->configuration->getMultiselectOptionSeparator()) === false) {
             if (!isset($options[$parameter])) {
                 if($this->configuration->isUtfFriendlyModeEnabled()) {

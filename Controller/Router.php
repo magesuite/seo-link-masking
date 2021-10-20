@@ -49,7 +49,7 @@ class Router implements \Magento\Framework\App\RouterInterface
             return null;
         }
 
-        $requestedUrl = ltrim($request->getPathInfo(), '/');
+        $requestedUrl = trim($request->getPathInfo(), '/');
         $rewrite = $this->urlRewriteFinder->findRewrite($requestedUrl);
 
         if (empty($rewrite)) {
