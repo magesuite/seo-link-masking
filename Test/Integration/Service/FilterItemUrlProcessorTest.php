@@ -20,11 +20,22 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      */
     protected $registry;
 
+    /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Filter
+     */
+    protected $filterHelper;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->registry = $this->objectManager->get(\Magento\Framework\Registry::class);
+
+        $this->filterHelper = $this->createStub(
+            \MageSuite\SeoLinkMasking\Helper\Filter::class
+        );
+
+        $this->objectManager->addSharedInstance($this->filterHelper, \MageSuite\SeoLinkMasking\Helper\Filter::class);
     }
 
     /**
@@ -63,6 +74,27 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
         $urlContainPath = strpos($response[0]['url'], 'http://localhost/index.php/catalogsearch/result/index/option') !== false;
 
         $this->assertTrue($urlContainPath);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
+     * @magentoDataFixture loadFilterableProducts
+     */
+    public function testItReturnsCorrectUrlForMaskedFilterInAjaxRequest()
+    {
+        $this->filterHelper->method('isFilterMasked')->willReturn(true);
+
+        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
+
+        $response = json_decode($this->getResponse()->getBody(), true);
+        $decodedUrl = json_decode($response[0]['url'], true);
+
+        $this->assertEquals('http://localhost/index.php/linkmasking/filter/redirect/', $decodedUrl['action']);
+        $this->assertEquals('http://localhost/index.php/catalogsearch/result/index/option+1', $decodedUrl['data']['url']);
     }
 
     public static function loadFilterableProducts()

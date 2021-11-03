@@ -5,6 +5,11 @@ namespace MageSuite\SeoLinkMasking\Helper;
 class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Configuration
+     */
+    protected $configuration;
+
+    /**
      * @var \Magento\Framework\App\RequestInterface
      */
     protected $request;
@@ -16,11 +21,13 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
+        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \Magento\Framework\App\RequestInterface $request,
         \MageSuite\SeoLinkMasking\Service\FilterableAttributesProvider $filterableAttributesProvider
     ) {
         parent::__construct($context);
 
+        $this->configuration = $configuration;
         $this->request = $request;
         $this->filterableAttributesProvider = $filterableAttributesProvider;
     }
@@ -41,6 +48,25 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 
         $difference = array_diff_key($filters, $filterableAttributes);
 
-        return count($difference) < count($filters) ? true : false;
+        return count($difference) < count($filters);
+    }
+
+    public function isFilterMasked($category, $attributeId)
+    {
+        if ($this->configuration->onlyOneFilterDemasked() && $this->isFilterSelected($category)) {
+            return true;
+        }
+
+        $seoLinkMasking = $category->getSeoLinkMasking();
+
+        if (empty($seoLinkMasking)) {
+            return $this->configuration->getDefaultMaskingState();
+        }
+
+        if (isset($seoLinkMasking[$attributeId])) {
+            return $seoLinkMasking[$attributeId];
+        }
+
+        return $this->configuration->getDefaultMaskingState();
     }
 }

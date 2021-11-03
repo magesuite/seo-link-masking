@@ -5,6 +5,11 @@ namespace MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\AbstractFil
 class IsLinkMaskingEnabled
 {
     /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    protected $request;
+
+    /**
      * @var \Magento\Framework\Registry
      */
     protected $registry;
@@ -25,11 +30,13 @@ class IsLinkMaskingEnabled
     protected $categoryHelper;
 
     public function __construct(
+        \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\Registry $registry,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper,
         \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper
     ) {
+        $this->request = $request;
         $this->registry = $registry;
         $this->configuration = $configuration;
         $this->filterHelper = $filterHelper;
@@ -42,33 +49,23 @@ class IsLinkMaskingEnabled
             return $proceed($key, $index);
         }
 
-        $category = $this->getCategory();
+        $category = $this->getCategory($subject);
 
         if (empty($category)) {
             return $proceed($key, $index);
         }
 
-        if ($this->configuration->onlyOneFilterDemasked() && $this->filterHelper->isFilterSelected($category)) {
-            return true;
-        }
-
-        $seoLinkMasking = $category->getSeoLinkMasking();
-
-        if (empty($seoLinkMasking)) {
-            return $this->configuration->getDefaultMaskingState();
-        }
-
         $attributeId = $subject->getAttributeModel()->getId();
 
-        if (isset($seoLinkMasking[$attributeId])) {
-            return $seoLinkMasking[$attributeId];
-        }
-
-        return $this->configuration->getDefaultMaskingState();
+        return $this->filterHelper->isFilterMasked($category, $attributeId);
     }
 
-    protected function getCategory()
+    protected function getCategory($subject)
     {
+        if ($this->request->getFullActionName() == \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
+            return $subject->getLayer()->getCurrentCategory();
+        }
+
         $category = $this->registry->registry('current_category');
         return $this->categoryHelper->getCategoryEntityForSearchResultPage($category);
     }
