@@ -293,7 +293,7 @@ class FilterItemUrlProcessor
 
     public function getUrl($category, $requestParameters)
     {
-        if ($this->request->getFullActionName() == 'catalog_navigation_filter_ajax') {
+        if ($this->request->getFullActionName() == \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
             if ($this->request->getParam('cat')) {
                 return $this->getCategoryUrl($category);
             } else {
