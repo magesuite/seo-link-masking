@@ -94,7 +94,9 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
         $decodedUrl = json_decode($response[0]['url'], true);
 
         $this->assertEquals('http://localhost/index.php/linkmasking/filter/redirect/', $decodedUrl['action']);
-        $this->assertEquals('http://localhost/index.php/catalogsearch/result/index/option+1', $decodedUrl['data']['url']);
+        
+        $urlContainPath = strpos($decodedUrl['data']['url'], 'http://localhost/index.php/catalogsearch/result/index/option') !== false;
+        $this->assertTrue($urlContainPath);
     }
 
     public static function loadFilterableProducts()
