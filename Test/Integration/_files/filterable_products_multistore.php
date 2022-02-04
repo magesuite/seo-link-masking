@@ -30,7 +30,7 @@ $attribute = $productAttributeRepository->get('multiselect_attribute');
 
 $options = $attribute->getOptions();
 
-foreach ($options as $option){
+foreach ($options as $option) {
     $optionLabel = new \Magento\Framework\DataObject(
         ['store_id' => $storeID, 'label' => $option->getLabel()]
     );
@@ -42,6 +42,3 @@ foreach ($options as $option){
 }
 $attribute->setOptions($options);
 $productAttributeRepository->save($attribute);
-
-
-

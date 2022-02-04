@@ -91,7 +91,7 @@ class Router implements \Magento\Framework\App\RouterInterface
     {
         $filterParameters = $this->filterParametersProcessor->process($params);
 
-        if(empty($filterParameters)) {
+        if (empty($filterParameters)) {
             return false;
         }
 

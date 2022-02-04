@@ -1,6 +1,6 @@
 <?php
 
-namespace Magento\UrlRewrite\Model\StoreSwitcher;
+namespace MageSuite\SeoLinkMasking\Test\Integration\Model\StoreSwitcher;
 
 /**
  * Class RewriteUrlTest
@@ -14,12 +14,12 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
     /**
      * @var \Magento\Store\Model\StoreSwitcher
      */
-    private $storeSwitcher;
+    protected $storeSwitcher;
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var \Magento\Store\Api\StoreRepositoryInterface
      */
-    private $objectManager;
+    protected $storeRepository;
 
     /**
      * Class dependencies initialization
@@ -28,8 +28,9 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $this->storeSwitcher = $this->objectManager->get(\Magento\Store\Model\StoreSwitcher::class);
+        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+        $this->storeSwitcher = $objectManager->get(\Magento\Store\Model\StoreSwitcher::class);
+        $this->storeRepository = $objectManager->get(\Magento\Store\Api\StoreRepositoryInterface::class);
     }
 
     /**
@@ -44,19 +45,32 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
     public function testSwitchToExistingPage(): void
     {
         $fromStoreCode = 'default';
-        /** @var \Magento\Store\Api\StoreRepositoryInterface $storeRepository */
-        $storeRepository = $this->objectManager->create(\Magento\Store\Api\StoreRepositoryInterface::class);
-        $fromStore = $storeRepository->get($fromStoreCode);
+        $fromStore = $this->storeRepository->get($fromStoreCode);
 
         $toStoreCode = 'fixture_second_store';
-        /** @var \Magento\Store\Api\StoreRepositoryInterface $storeRepository */
-        $storeRepository = $this->objectManager->create(\Magento\Store\Api\StoreRepositoryInterface::class);
-        $toStore = $storeRepository->get($toStoreCode);
+        $toStore = $this->storeRepository->get($toStoreCode);
 
         $redirectUrl = "http://localhost/index.php/test-category/option+1";
         $expectedUrl = "http://localhost/index.php/test-category-translated/option+1+translated";
 
         $this->assertEquals($expectedUrl, $this->storeSwitcher->switch($fromStore, $toStore, $redirectUrl));
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation disabled
+     * @magentoConfigFixture current_store catalog/seo/category_url_suffix
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/two_categories_multistore.php
+     * @return void
+     */
+    public function testSwitchToProperCategoryPage(): void
+    {
+        $fromStore = $this->storeRepository->get('default');
+        $toStore = $this->storeRepository->get('fixture_second_store');
+        $expectedUrl = "http://localhost/index.php/category/subcategory-fixturestore.html";
+
+        $this->assertEquals($expectedUrl, $this->storeSwitcher->switch($fromStore, $toStore, $expectedUrl));
     }
 
     public static function loadFilterableProductsMultistore()

@@ -10,7 +10,7 @@ class RewriteUrl implements \Magento\Store\Model\StoreSwitcherInterface
     /**
      * @var \Magento\UrlRewrite\Model\UrlFinderInterface
      */
-    private $urlFinder;
+    protected $urlFinder;
 
     /**
      * @var \MageSuite\SeoLinkMasking\Service\UrlRewriteFinder
@@ -20,7 +20,7 @@ class RewriteUrl implements \Magento\Store\Model\StoreSwitcherInterface
     /**
      * @var \Magento\Framework\HTTP\PhpEnvironment\RequestFactory
      */
-    private $requestFactory;
+    protected $requestFactory;
 
     /**
      * @var \MageSuite\SeoLinkMasking\Model\FilterParametersProcessor
@@ -58,12 +58,10 @@ class RewriteUrl implements \Magento\Store\Model\StoreSwitcherInterface
         \Magento\Store\Api\Data\StoreInterface $fromStore,
         \Magento\Store\Api\Data\StoreInterface $targetStore,
         string $redirectUrl
-    ): string
-    {
+    ): string {
         $targetUrl = $redirectUrl;
         /** @var \Magento\Framework\HTTP\PhpEnvironment\Request $request */
         $request = $this->requestFactory->create(['uri' => $targetUrl]);
-
         $urlPath = ltrim($request->getPathInfo(), '/');
 
         if ($targetStore->isUseStoreInUrl()) {
@@ -71,6 +69,15 @@ class RewriteUrl implements \Magento\Store\Model\StoreSwitcherInterface
             $storeCode = preg_quote($targetStore->getCode() . '/', '/');
             $pattern = "@^($storeCode)@";
             $urlPath = preg_replace($pattern, '', $urlPath);
+        }
+
+        $urlRewrite = $this->urlFinder->findOneByData([
+            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::REQUEST_PATH => $urlPath,
+            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::STORE_ID => $targetStore->getId(),
+        ]);
+
+        if ($urlRewrite) {
+            return $targetUrl;
         }
 
         $oldStoreId = $fromStore->getId();
@@ -103,7 +110,7 @@ class RewriteUrl implements \Magento\Store\Model\StoreSwitcherInterface
     {
         $filterParameters = $this->filterParametersProcessor->processRewrite($params, $oldStoreId, $targetStoreId);
 
-        if(empty($filterParameters)) {
+        if (empty($filterParameters)) {
             return false;
         }
 

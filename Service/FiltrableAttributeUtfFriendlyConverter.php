@@ -22,7 +22,6 @@ class FiltrableAttributeUtfFriendlyConverter
         return $filteredValues;
     }
 
-
     protected function convertFilterParam($filteredValue)
     {
         $filteredValue = urldecode($filteredValue);
@@ -38,9 +37,11 @@ class FiltrableAttributeUtfFriendlyConverter
             'ẞ' => 'Ss'
         ];
 
-        $utfFriedlyParameter = str_replace(array_keys($convertTable),
+        $utfFriedlyParameter = str_replace(
+            array_keys($convertTable),
             array_values($convertTable),
-            $filteredValue);
+            $filteredValue
+        );
 
         return urlencode($utfFriedlyParameter);
     }
