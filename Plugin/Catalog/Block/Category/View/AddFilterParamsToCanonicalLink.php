@@ -35,7 +35,9 @@ class AddFilterParamsToCanonicalLink
             return $proceed($url, $contentType, $properties, $name);
         }
 
-        if ($this->request->getFullActionName() === self::CATALOG_CATEGORY_VIEW_LAYOUT_HANDLE && $contentType === 'canonical' && $this->configurationHelper->areFilterParamsInCanonicalEnabled()) {
+        if ($this->request->getFullActionName() === self::CATALOG_CATEGORY_VIEW_LAYOUT_HANDLE
+            && $contentType === 'canonical'
+            && $this->configurationHelper->areFilterParamsInCanonicalEnabled()) {
             $url = urldecode($this->getCurrentUrlWithoutParams());
             $url = str_replace(' ', '+', $url);
             return $proceed($url, $contentType, $properties, $name);
@@ -46,6 +48,7 @@ class AddFilterParamsToCanonicalLink
 
     protected function getCurrentUrlWithoutParams()
     {
+        //phpcs:ignore Magento2.Functions.DiscouragedFunction
         $parsedUrl = parse_url($this->urlBuilder->getCurrentUrl());
         return $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
     }

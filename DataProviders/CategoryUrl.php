@@ -37,7 +37,6 @@ class CategoryUrl extends \MageSuite\Opengraph\DataProviders\TagProvider impleme
         \Magento\UrlRewrite\Model\UrlFinderInterface $urlFinder,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\Opengraph\Factory\TagFactoryInterface $tagFactory
-
     ) {
         $this->registry = $registry;
         $this->request = $request;

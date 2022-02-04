@@ -29,7 +29,7 @@ class UpdateHreflangUrl
         if (empty($linkMaskingParameters)) {
             return $proceed($url);
         }
-        if($this->configuration->isUtfFriendlyModeEnabled()) {
+        if ($this->configuration->isUtfFriendlyModeEnabled()) {
             $queryParams = $subject->getRequest()->getQueryValue();
             $linkMaskingParameters = $this->buildUrlMaskFromQueryParams($queryParams);
         }
@@ -41,15 +41,14 @@ class UpdateHreflangUrl
     {
         $linkMaskingParameters = '';
         $separator = $this->configuration->getMultiselectOptionSeparator();
-        foreach ($queryParams as $param)
-        {
-            if(!is_array($param)) {
+        foreach ($queryParams as $param) {
+            if (!is_array($param)) {
                 $param = '/'.strtolower($param);
                 $linkMaskingParameters = $linkMaskingParameters.$param;
                 continue;
             }
 
-            $multiParam = '/'.implode($separator,$param);
+            $multiParam = '/'.implode($separator, $param);
             $linkMaskingParameters = $linkMaskingParameters.$multiParam;
 
         }

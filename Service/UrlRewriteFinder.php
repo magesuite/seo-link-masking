@@ -53,7 +53,7 @@ class UrlRewriteFinder
     {
         $pathParts = explode('/', $pathInfo);
         $rewrite = null;
-        if(empty($storeId)) {
+        if (empty($storeId)) {
             $storeId = $this->storeManager->getStore()->getId();
         }
 

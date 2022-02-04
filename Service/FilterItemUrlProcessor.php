@@ -165,7 +165,7 @@ class FilterItemUrlProcessor
 
         $urlParts = explode(self::URL_PARAMS_DELIMITER, $url);
 
-        if($this->configuration->isUtfFriendlyModeEnabled()) {
+        if ($this->configuration->isUtfFriendlyModeEnabled()) {
             $filtersValues = $this->filtrableAttributeUtfFriendlyConverter->convertFilterParams($filtersValues);
         }
 

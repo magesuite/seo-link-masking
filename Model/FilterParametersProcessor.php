@@ -41,7 +41,7 @@ class FilterParametersProcessor
         $parameters = ltrim($urlParameters, '/');
         $parameters = explode('/', $parameters);
 
-        if(empty($parameters)){
+        if (empty($parameters)) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class FilterParametersProcessor
             $filterParameters[$preparedParameter['key']] = $preparedParameter['value'];
         }
 
-        if (count($parameters) != count($filterParameters) ) {
+        if (count($parameters) != count($filterParameters)) {
             return false;
         }
 
@@ -69,19 +69,26 @@ class FilterParametersProcessor
     {
         $filterParameters = $this->process($urlParameters, $oldStoreId);
 
-        if(empty($filterParameters)){
+        if (empty($filterParameters)) {
             return false;
         }
 
         foreach ($filterParameters as $code => $value) {
-            $filterParameters[$code] = $this->filterableAttributeOptionsProvider->rewriteOption($code, $value, $oldStoreId, $targetStoreId);
+            $parameterOptions = new \Magento\Framework\DataObject([
+                'code' => $code,
+                'value' => $value,
+                'old_store_id' => $oldStoreId,
+                'target_store_id' => $targetStoreId
+            ]);
+            $filterParameters[$code] = $this->filterableAttributeOptionsProvider->rewriteOption($parameterOptions);
         }
 
         return $filterParameters;
     }
 
-    public function toUrl($filterParameters){
-        foreach($filterParameters as $code => $values){
+    public function toUrl($filterParameters)
+    {
+        foreach ($filterParameters as $code => $values) {
             $value = implode($this->configuration->getMultiselectOptionSeparator(), $values);
             $filterParameters[$code] = $this->urlHelper->encodeValue($value);
         }
@@ -94,20 +101,11 @@ class FilterParametersProcessor
         if (empty($parameter)) {
             return null;
         }
-        
+
+        $utfFriendlyModeEnabled = $this->configuration->isUtfFriendlyModeEnabled();
+
         if (strpos($parameter, $this->configuration->getMultiselectOptionSeparator()) === false) {
-            if (!isset($options[$parameter])) {
-                if($this->configuration->isUtfFriendlyModeEnabled()) {
-                    $optionsConverted = $this->filtrableAttributeUtfFriendlyConverter->convertOptions($options);
-
-                    if (isset($optionsConverted[$parameter])) {
-                        return ['key' => $optionsConverted[$parameter]['code'], 'value' => $optionsConverted[$parameter]['value']];
-                    }
-                }
-                return null;
-            }
-
-            return ['key' => $options[$parameter]['code'], 'value' => $options[$parameter]['value']];
+            return $this->getFilterValues($parameter, $options);
         }
 
         $parameterOptions = explode($this->configuration->getMultiselectOptionSeparator(), $parameter);
@@ -116,23 +114,14 @@ class FilterParametersProcessor
         $values = [];
 
         foreach ($parameterOptions as $parameterOption) {
-            if (!isset($options[$parameterOption])) {
-                if($this->configuration->isUtfFriendlyModeEnabled()) {
-                    $optionsConverted = $this->filtrableAttributeUtfFriendlyConverter->convertOptions($options);
+            $filterValues = $this->getFilterValues($parameterOption, $options);
 
-                    if(!isset($optionsConverted[$parameterOption])) {
-                        return null;
-                    }
-
-                    $key = $optionsConverted[$parameterOption]['code'];
-                    $values[] = $optionsConverted[$parameterOption]['value'];
-                    continue;
-                }
+            if ($filterValues === null) {
                 return null;
             }
 
-            $key = $options[$parameterOption]['code'];
-            $values[] = $options[$parameterOption]['value'];
+            $key = $filterValues['key'];
+            $values[] = $filterValues['value'];
         }
 
         if (empty($key)) {
@@ -140,5 +129,28 @@ class FilterParametersProcessor
         }
 
         return ['key' => $key, 'value' => $values];
+    }
+
+    protected function getFilterValues(string $parameter, array $options): ?array
+    {
+        $utfFriendlyModeEnabled = $this->configuration->isUtfFriendlyModeEnabled();
+
+        if (!isset($options[$parameter])) {
+            $optionsConverted = $this->filtrableAttributeUtfFriendlyConverter->convertOptions($options);
+
+            if ($utfFriendlyModeEnabled && isset($optionsConverted[$parameter])) {
+                return [
+                    'key' => $optionsConverted[$parameter]['code'],
+                    'value' => $optionsConverted[$parameter]['value']
+                ];
+            }
+
+            return null;
+        }
+
+        return [
+            'key' => $options[$parameter]['code'],
+            'value' => $options[$parameter]['value']
+        ];
     }
 }
