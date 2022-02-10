@@ -121,6 +121,28 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->assertEquals(['Option 1', 'Option 2'], $parameters['multiselect_attribute']);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture loadFilterableProducts
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
+     */
+    public function testItSetFilterWithMultipleOptionsWithSlash()
+    {
+        $this->dispatch('/test-category/option+1/option+2');
+
+        $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
+
+        $this->$assertContains('Multiselect Attribute', $this->getResponse()->getBody());
+
+        $parameters = $this->getRequest()->getParams();
+
+        $this->assertArrayHasKey('multiselect_attribute', $parameters);
+        $this->assertCount(2, $parameters['multiselect_attribute']);
+        $this->assertEquals(['Option 1', 'Option 2'], $parameters['multiselect_attribute']);
+    }
+
     public static function loadFilterableProducts()
     {
         require __DIR__.'/../_files/filterable_products.php';

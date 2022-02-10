@@ -46,7 +46,9 @@ class FilterParametersProcessor
         }
 
         $options = $this->filterableAttributeOptionsProvider->getOptions($storeId);
+
         $filterParameters = [];
+        $filterParameterItemsCount = 0;
 
         foreach ($parameters as $parameter) {
             $preparedParameter = $this->prepareParameter($parameter, $options);
@@ -55,10 +57,11 @@ class FilterParametersProcessor
                 continue;
             }
 
-            $filterParameters[$preparedParameter['key']] = $preparedParameter['value'];
+            $filterParameters = $this->addFilteredParameter($filterParameters, $preparedParameter);
+            $filterParameterItemsCount++;
         }
 
-        if (count($parameters) != count($filterParameters)) {
+        if (count($parameters) != $filterParameterItemsCount) {
             return false;
         }
 
@@ -102,13 +105,13 @@ class FilterParametersProcessor
             return null;
         }
 
-        $utfFriendlyModeEnabled = $this->configuration->isUtfFriendlyModeEnabled();
+        $multiselectOptionSeparator = $this->configuration->getMultiselectOptionSeparator();
 
-        if (strpos($parameter, $this->configuration->getMultiselectOptionSeparator()) === false) {
+        if (strpos($parameter, $multiselectOptionSeparator) === false) {
             return $this->getFilterValues($parameter, $options);
         }
 
-        $parameterOptions = explode($this->configuration->getMultiselectOptionSeparator(), $parameter);
+        $parameterOptions = explode($multiselectOptionSeparator, $parameter);
 
         $key = null;
         $values = [];
@@ -129,6 +132,24 @@ class FilterParametersProcessor
         }
 
         return ['key' => $key, 'value' => $values];
+    }
+
+    protected function addFilteredParameter($filterParameters, $preparedParameter)
+    {
+        $preparedParameterKey = $preparedParameter['key'];
+        $preparedParameterValue = $preparedParameter['value'];
+
+        if (!isset($filterParameters[$preparedParameterKey])) {
+            $filterParameters[$preparedParameterKey] = $preparedParameterValue;
+            return $filterParameters;
+        }
+
+        if (!is_array($filterParameters[$preparedParameterKey])) {
+            $filterParameters[$preparedParameterKey] = [$filterParameters[$preparedParameterKey]];
+        }
+
+        $filterParameters[$preparedParameterKey][] = $preparedParameterValue;
+        return $filterParameters;
     }
 
     protected function getFilterValues(string $parameter, array $options): ?array
