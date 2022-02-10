@@ -98,6 +98,10 @@ class FilterableAttributesProvider
             $categoryId = $this->request->getParam('cat');
         }
 
+        if (!$categoryId) {
+            return [];
+        }
+
         $cacheKey = $this->getCacheKey($categoryId);
         $cachedData = $this->cache->load($cacheKey);
 
