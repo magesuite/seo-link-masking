@@ -32,6 +32,7 @@ if (!$attribute->loadByCode($entityType, 'multiselect_attribute')->getAttributeI
                 'value' => [
                     'option_1' => ['Option 1'],
                     'option_2' => ['Option 2'],
+                    'option_3' => ['Option with & special char']
                 ],
                 'order' => [
                     'option_1' => 1,

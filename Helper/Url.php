@@ -54,6 +54,7 @@ class Url extends \Magento\Framework\App\Helper\AbstractHelper
             return $value;
         }
 
-        return str_replace($excludedCharacters, '', $value);
+        $result = str_replace($excludedCharacters, '', $value);
+        return preg_replace('!\s+!', ' ', $result);
     }
 }
