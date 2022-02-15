@@ -4,6 +4,16 @@ namespace MageSuite\SeoLinkMasking\Service;
 
 class FiltrableAttributeUtfFriendlyConverter
 {
+    /**
+     * @var \MageSuite\SeoLinkMasking\Helper\Configuration
+     */
+    protected $configuration;
+
+    public function __construct(\MageSuite\SeoLinkMasking\Helper\Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
     public function convertOptions($options)
     {
         foreach ($options as $optionKey => $option) {
@@ -37,12 +47,34 @@ class FiltrableAttributeUtfFriendlyConverter
             'ẞ' => 'Ss'
         ];
 
-        $utfFriedlyParameter = str_replace(
+        $utfFriendlyParameter = str_replace(
             array_keys($convertTable),
             array_values($convertTable),
             $filteredValue
         );
 
-        return urlencode($utfFriedlyParameter);
+        return $this->encodeUrl($utfFriendlyParameter);
+    }
+
+    /**
+     * Special case: if url contain /, it shouldn't be encoded to %2F
+     */
+    protected function encodeUrl($utfFriendlyParameter)
+    {
+        if (empty($this->configuration->getExcludedCharacters()) || !in_array('/', $this->configuration->getExcludedCharacters())) {
+            return urlencode($utfFriendlyParameter);
+        }
+
+        if (strpos($utfFriendlyParameter, '/') === false) {
+            return urlencode($utfFriendlyParameter);
+        }
+
+        $paramParts = explode('/', $utfFriendlyParameter);
+
+        foreach ($paramParts as &$part) {
+            $part = urlencode($part);
+        }
+
+        return implode('/', $paramParts);
     }
 }

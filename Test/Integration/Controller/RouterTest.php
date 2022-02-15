@@ -78,14 +78,14 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture loadFilterableProducts
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoConfigFixture default/seo/link_masking/excluded_characters otn
+     * @magentoConfigFixture default/seo/link_masking/excluded_characters &
      */
     public function testItSetFiltersIfExcludedCharactersAreSet()
     {
         $cacheKey = $this->getFilterableAttributeOptionsCacheKey(self::DEFAULT_STORE_ID);
         $this->cache->remove($cacheKey);
 
-        $this->dispatch('/test-category/pi+1');
+        $this->dispatch('/test-category/option+with+special+char');
 
         $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
 
@@ -94,7 +94,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
         $parameters = $this->getRequest()->getParams();
 
         $this->assertArrayHasKey('multiselect_attribute', $parameters);
-        $this->assertEquals('Option 1', $parameters['multiselect_attribute']);
+        $this->assertEquals('Option with & special char', $parameters['multiselect_attribute']);
 
         $this->cache->remove($cacheKey);
     }
