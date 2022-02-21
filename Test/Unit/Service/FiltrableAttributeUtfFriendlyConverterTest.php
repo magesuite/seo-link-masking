@@ -46,7 +46,8 @@ class FiltrableAttributeUtfFriendlyConverterTest extends \PHPUnit\Framework\Test
             'param with slash and excluded slash' => ['Para/meter', 'Para/meter', ['/']],
             'param with special chars' => ['Para!=&^%meter', 'Para%21%3D%26%5E%25meter', []],
             'param with slash and german char' => ['Pära/meter', 'Paera%2Fmeter', []],
-            'param with slash and german char and excluded slash' => ['Pära/meter', 'Paera/meter', ['/']]
+            'param with slash and german char and excluded slash' => ['Pära/meter', 'Paera/meter', ['/']],
+            'param with french chars' => ['Parameter Dès Noël où un zéphyr haï me vêt de glaçons würmiens je dîne', 'Parameter+Des+Noel+ou+un+zephyr+hai+me+vet+de+glacons+wuermiens+je+dine', []]
         ];
     }
 }
