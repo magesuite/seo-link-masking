@@ -5,6 +5,8 @@ namespace MageSuite\SeoLinkMasking\Helper;
 class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 {
     const XML_PATH_SEO_LINK_MASKING_CONFIGURATION = 'seo/link_masking';
+    const XML_PATH_SEO_LINK_MASKING_SPACE_REPLACEMENT_CHAR = 'seo/link_masking/space_replacement_character';
+    const XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS = 'seo/link_masking/excluded_characters';
     const LINK_MASKING_PARAMETER_REGISTRY_KEY = 'link_masking_parameters';
 
     const SEARCH_RESULT_PAGE_FULL_ACTION_NAME = 'catalogsearch_result_index';
@@ -65,6 +67,11 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return (bool)$this->getConfig()->getEnableFilterParamsInCanonical();
     }
 
+    public function getSpaceReplacementCharacter()
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_SPACE_REPLACEMENT_CHAR);
+    }
+
     public function getMultiselectOptionSeparator()
     {
         return $this->getConfig()->getMultiselectOptionSeparator();
@@ -83,6 +90,20 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
     public function isUtfFriendlyModeEnabled()
     {
         return (bool)$this->getConfig()->getIsUtfFriendlyModeEnabled();
+    }
+
+    public function getExcludedCharacters()
+    {
+        $excludedCharacters = $this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS);
+
+        if (empty($excludedCharacters)) {
+            return [];
+        }
+
+        return array_map(
+            'trim',
+            str_split($excludedCharacters)
+        );
     }
 
     protected function getConfig()

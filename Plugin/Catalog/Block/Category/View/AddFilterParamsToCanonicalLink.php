@@ -39,7 +39,7 @@ class AddFilterParamsToCanonicalLink
             && $contentType === 'canonical'
             && $this->configurationHelper->areFilterParamsInCanonicalEnabled()) {
             $url = urldecode($this->getCurrentUrlWithoutParams());
-            $url = str_replace(' ', '+', $url);
+            $url = str_replace(' ', $this->configurationHelper->getSpaceReplacementCharacter(), $url);
             return $proceed($url, $contentType, $properties, $name);
         } else {
             return $proceed($url, $contentType, $properties, $name);

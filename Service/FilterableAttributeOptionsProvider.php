@@ -52,7 +52,7 @@ class FilterableAttributeOptionsProvider
         $cachedData = $this->cache->load($cacheKey);
 
         if (!empty($cachedData)) {
-            return $this->serializer->unserialize($this->cache->load($cacheKey));
+            return $this->serializer->unserialize($cachedData);
         }
 
         $options = [];

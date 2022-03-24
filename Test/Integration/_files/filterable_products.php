@@ -45,7 +45,7 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setStockData(['use_config_manage_stock' => 1, 'qty' => 100, 'is_qty_decimal' => 0, 'is_in_stock' => 1])
     ->setCanSaveCustomOptions(true)
     ->setDescription('Description')
-    ->setMultiselectAttribute([$optionIds[1]])
+    ->setMultiselectAttribute([$optionIds[1], $optionIds[2]])
     ->save();
 
 $product->reindex();

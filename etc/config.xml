@@ -8,6 +8,7 @@
                 <only_one_filter_demasked>0</only_one_filter_demasked>
                 <is_short_filter_url_enabled>0</is_short_filter_url_enabled>
                 <enable_filter_params_in_canonical>0</enable_filter_params_in_canonical>
+                <space_replacement_character>+</space_replacement_character>
                 <multiselect_option_separator>--</multiselect_option_separator>
             </link_masking>
         </seo>
