@@ -9,7 +9,7 @@
 
 <!-- ko if: isLinkMaskingEnabled -->
 
-<!-- ko if: Object.keys(getDisplayedItems()).length == 0 -->
+<!-- ko if: Object.keys(getDisplayedItems()).length > 1 -->
 <ol class="items" data-bind="foreach: getDisplayedItems()">
     <li class="item">
         <a href="#" data-bind="attr: {'data-post': url}, visible: count >= 1">
@@ -33,7 +33,7 @@
 <!-- /ko -->
 <!-- ko ifnot: isLinkMaskingEnabled -->
 
-<!-- ko if: Object.keys(getDisplayedItems()).length == 0 -->
+<!-- ko if: Object.keys(getDisplayedItems()).length > 1 -->
 <ol class="items" data-bind="foreach: getDisplayedItems()">
     <li class="item">
         <a data-bind="attr: {href:url}, visible: count >= 1">
