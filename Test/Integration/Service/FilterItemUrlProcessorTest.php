@@ -94,8 +94,31 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
         $decodedUrl = json_decode($response[0]['url'], true);
 
         $this->assertEquals('http://localhost/index.php/linkmasking/filter/redirect/', $decodedUrl['action']);
-        
+
         $urlContainPath = strpos($decodedUrl['data']['url'], 'http://localhost/index.php/catalogsearch/result/index/option') !== false;
+        $this->assertTrue($urlContainPath);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 0
+     * @magentoDataFixture loadFilterableProducts
+     */
+    public function testItReturnsCorrectUrlFilterUrlIfMaskingIsEnabledButShortFilterUrlIdDisabledInAjaxRequest()
+    {
+        $this->filterHelper->method('isFilterMasked')->willReturn(true);
+
+        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
+
+        $response = json_decode($this->getResponse()->getBody(), true);
+        $decodedUrl = json_decode($response[0]['url'], true);
+
+        $this->assertEquals('http://localhost/index.php/linkmasking/filter/redirect/', $decodedUrl['action']);
+
+        $urlContainPath = strpos($decodedUrl['data']['url'], 'http://localhost/index.php/?multiselect_attribute=Option+2') !== false;
         $this->assertTrue($urlContainPath);
     }
 
