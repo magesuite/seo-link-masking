@@ -57,17 +57,26 @@ class AdjustFilterItemUrl
         $filter = $subject->getFilter();
         $category = $this->getCategory();
 
-        if (!$this->configuration->isShortFilterUrlEnabled() || $this->isCategoryFilter($filter->getRequestVar())) {
+        $maskingEnabled = $this->configuration->isShortFilterUrlEnabled() || $filter->getIsLinkMaskingEnabled();
+
+        if (!$maskingEnabled || $this->isCategoryFilter($filter->getRequestVar())) {
+            return $proceed();
+        }
+
+        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
             return $proceed();
         }
 
         $url = $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
 
-        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME || !$filter->getIsLinkMaskingEnabled()) {
+        if (!$filter->getIsLinkMaskingEnabled()) {
             return $url;
+        } elseif (!$this->configuration->isShortFilterUrlEnabled()) {
+            $url = $proceed();
         }
 
         $linkMaskingUrl = $this->url->getUrl(\MageSuite\SeoLinkMasking\Plugin\Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute\AddLinkMaskingToFilterData::LINK_MASKING_ENDPOINT);
+
         return $this->postHelper->getPostData($linkMaskingUrl, ['url' => $url]);
     }
 
