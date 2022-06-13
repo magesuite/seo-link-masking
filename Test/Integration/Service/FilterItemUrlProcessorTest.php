@@ -118,7 +118,7 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
 
         $this->assertEquals('http://localhost/index.php/linkmasking/filter/redirect/', $decodedUrl['action']);
 
-        $urlContainPath = strpos($decodedUrl['data']['url'], 'http://localhost/index.php/?multiselect_attribute=Option+2') !== false;
+        $urlContainPath = strpos($decodedUrl['data']['url'], 'http://localhost/index.php/?multiselect_attribute=Option') !== false;
         $this->assertTrue($urlContainPath);
     }
 
