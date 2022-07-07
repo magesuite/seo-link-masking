@@ -63,11 +63,11 @@ class AdjustFilterItemUrl
             return $proceed();
         }
 
-        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
-            return $proceed();
-        }
-
         $url = $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
+
+        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
+            return $url;
+        }
 
         if (!$filter->getIsLinkMaskingEnabled()) {
             return $url;

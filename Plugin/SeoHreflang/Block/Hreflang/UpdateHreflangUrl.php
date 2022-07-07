@@ -14,15 +14,22 @@ class UpdateHreflangUrl
      */
     protected $configuration;
 
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    protected $request;
+
     public function __construct(
         \Magento\Framework\Registry $registry,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
+        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        \Magento\Framework\App\RequestInterface $request
     ) {
         $this->registry = $registry;
         $this->configuration = $configuration;
+        $this->request = $request;
     }
 
-    public function aroundAddQueryToUrl(\MageSuite\SeoHreflang\Block\Hreflang $subject, \Closure $proceed, $url)
+    public function aroundAddQueryToUrl(\MageSuite\SeoHreflang\ViewModel\Hreflang $subject, \Closure $proceed, $url)
     {
         $linkMaskingParameters = $this->registry->registry(\MageSuite\SeoLinkMasking\Helper\Configuration::LINK_MASKING_PARAMETER_REGISTRY_KEY);
 
@@ -30,7 +37,7 @@ class UpdateHreflangUrl
             return $proceed($url);
         }
         if ($this->configuration->isUtfFriendlyModeEnabled()) {
-            $queryParams = $subject->getRequest()->getQueryValue();
+            $queryParams = $this->request->getQueryValue();
             $linkMaskingParameters = $this->buildUrlMaskFromQueryParams($queryParams);
         }
 
@@ -50,9 +57,9 @@ class UpdateHreflangUrl
 
             $multiParam = '/'.implode($separator, $param);
             $linkMaskingParameters = $linkMaskingParameters.$multiParam;
-
         }
 
+        $linkMaskingParameters = str_replace(' ', $this->configuration->getSpaceReplacementCharacter(), $linkMaskingParameters);
         return $linkMaskingParameters;
     }
 }

@@ -10,25 +10,17 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Service;
  */
 class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $registry;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Filter
-     */
-    protected $filterHelper;
+    protected ?\Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
+    protected ?\MageSuite\SeoLinkMasking\Helper\Filter $filterHelper;
+    protected ?\Magento\Framework\ObjectManagerInterface $objectManager;
+    protected ?\Magento\Framework\Registry $registry;
 
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+        $this->categoryRepository = $this->objectManager->get(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
         $this->registry = $this->objectManager->get(\Magento\Framework\Registry::class);
 
         $this->filterHelper = $this->createStub(
@@ -65,13 +57,13 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoDataFixture loadFilterableProducts
      */
-    public function testLinkMaskingGetCorrectCategoryUrlSearchResult()
+    public function testLinkMaskingGetCorrectCategoryUrlWithNonAjaxRequest()
     {
-        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
+        $this->dispatch('http://localhost/index.php/main-category.html/option+2');
 
-        $response = json_decode($this->getResponse()->getBody(), true);
+        $response = $this->getResponse()->getBody();
 
-        $urlContainPath = strpos($response[0]['url'], 'http://localhost/index.php/catalogsearch/result/index/option') !== false;
+        $urlContainPath = strpos($response, 'http://localhost/index.php/main-category.html/option') !== false;
 
         $this->assertTrue($urlContainPath);
     }
@@ -119,6 +111,46 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
         $this->assertEquals('http://localhost/index.php/linkmasking/filter/redirect/', $decodedUrl['action']);
 
         $urlContainPath = strpos($decodedUrl['data']['url'], 'http://localhost/index.php/?multiselect_attribute=Option') !== false;
+        $this->assertTrue($urlContainPath);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
+     * @magentoDataFixture loadFilterableProducts
+     */
+    public function testLinkMaskingGetCorrectCategoryUrlSearchResult()
+    {
+        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
+
+        $response = json_decode($this->getResponse()->getBody(), true);
+
+        $urlContainPath = strpos($response[0]['url'], 'http://localhost/index.php/catalogsearch/result/index/option') !== false;
+
+        $this->assertTrue($urlContainPath);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 0
+     * @magentoDataFixture loadFilterableProducts
+     */
+    public function testItReturnsCorrectUrlFilterUrlIfMaskingIsEnabledButShortFilterUrlIdDisabled()
+    {
+        $this->filterHelper->method('isFilterMasked')->willReturn(true);
+
+        $this->dispatch('http://localhost/index.php/?multiselect_attribute=Option');
+
+        $response = $this->getResponse()->getBody();
+
+        $urlContainPath = strpos($response, 'http://localhost/index.php/?multiselect_attribute=Option') !== false;
+
         $this->assertTrue($urlContainPath);
     }
 
