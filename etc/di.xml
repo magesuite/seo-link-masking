@@ -3,7 +3,7 @@
     <type name="Magento\Catalog\Model\Category">
         <plugin name="add_link_masking_to_category" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Category\AddLinkMaskingToCategory" />
     </type>
-    <type name="MageSuite\SeoHreflang\Block\Hreflang">
+    <type name="MageSuite\SeoHreflang\ViewModel\Hreflang">
         <plugin name="update_hreflang_url" type="MageSuite\SeoLinkMasking\Plugin\SeoHreflang\Block\Hreflang\UpdateHreflangUrl" />
     </type>
 
