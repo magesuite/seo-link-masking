@@ -35,17 +35,14 @@ class Category
             return $category;
         }
 
-        $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
-        $rootCategory = $this->categoryRepository->get($rootCategoryId);
-
-        if ($this->configuration->isSearchResultPageAjaxFilterCall()) {
-            return $rootCategory;
+        if ($this->configuration->isSearchResultPageAjaxFilterCall() ||
+            $this->configuration->isSearchResultPage() ||
+            $this->configuration->isBrandsIndexPage()
+        ) {
+            $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
+            return $this->categoryRepository->get($rootCategoryId);
         }
 
-        if (!$this->configuration->isSearchResultPage()) {
-            return null;
-        }
-
-        return $rootCategory;
+        return null;
     }
 }
