@@ -5,39 +5,29 @@ namespace MageSuite\SeoLinkMasking\Service;
 class UrlRewriteFinder
 {
     const SEARCH_PAGE_URL_PARAMS = ['catalogsearch', 'result', 'index'];
-    const BRANDS_PAGE_URL_PARAMS = ['brands', 'index', 'index'];
 
-    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
 
-    protected \Magento\UrlRewrite\Model\UrlFinderInterface $urlFinder;
-
-    protected \Magento\Framework\App\RequestInterface $request;
+    /**
+     * @var \Magento\UrlRewrite\Model\UrlFinderInterface
+     */
+    protected $urlFinder;
 
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\UrlRewrite\Model\UrlFinderInterface $urlFinder,
-        \Magento\Framework\App\RequestInterface $request
+        \Magento\UrlRewrite\Model\UrlFinderInterface $urlFinder
     ) {
         $this->storeManager = $storeManager;
         $this->urlFinder = $urlFinder;
-        $this->request = $request;
     }
 
     public function findRewrite($pathInfo, $storeId = null)
     {
         $rewrite = $this->getSearchPageRewrite($pathInfo);
-
-        if ($rewrite) {
-            return $rewrite;
-        }
-
-        $rewrite = $this->getBrandPageRewrite($pathInfo);
-
-        if ($rewrite) {
-            return $rewrite;
-        }
-
-        return $this->findCategoryRewrite($pathInfo, $storeId);
+        return $rewrite ?? $this->findCategoryRewrite($pathInfo, $storeId);
     }
 
     protected function getSearchPageRewrite($pathInfo)
@@ -55,27 +45,6 @@ class UrlRewriteFinder
         return new \Magento\Framework\DataObject([
             'request_path' => $searchPageUrl,
             'target_path' => $searchPageUrl,
-            'redirect_type' => null
-        ]);
-    }
-
-    protected function getBrandPageRewrite($pathInfo)
-    {
-        if ($this->request->getModuleName() != self::BRANDS_PAGE_URL_PARAMS[0] ||
-            $this->request->getControllerName() != self::BRANDS_PAGE_URL_PARAMS[1] ||
-            $this->request->getActionName() != self::BRANDS_PAGE_URL_PARAMS[2]
-        ) {
-            return null;
-        }
-
-        $pathInfo = rtrim($pathInfo, '/');
-        $pathParts = explode('/', $pathInfo);
-
-        $cleanRequestPath = implode('/', array_slice($pathParts, 0, 2));
-
-        return new \Magento\Framework\DataObject([
-            'request_path' => $cleanRequestPath,
-            'target_path' => $cleanRequestPath,
             'redirect_type' => null
         ]);
     }
