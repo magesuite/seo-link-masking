@@ -52,37 +52,35 @@ class AdjustFilterItemUrl
         $this->filterItemUrlProcessor = $filterItemUrlProcessor;
     }
 
-    public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed)
-    {
-        $filter = $subject->getFilter();
-        $category = $this->getCategory();
+public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed)
+{
+    $filter = $subject->getFilter();
+    $category = $this->getCategory();
 
-        $maskingEnabled = $this->configuration->isShortFilterUrlEnabled() || $filter->getIsLinkMaskingEnabled();
+    $maskingEnabled = $this->configuration->isShortFilterUrlEnabled() || $filter->getIsLinkMaskingEnabled();
 
-        if (!$maskingEnabled || $this->isCategoryFilter($filter->getRequestVar())) {
-            return $proceed();
-        }
-
-        if ($this->configuration->areFilterParamsInFilterUrlEnabled()) {
-            return $proceed();
-        }
-
-        $url = $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
-
-        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
-            return $url;
-        }
-
-        if (!$filter->getIsLinkMaskingEnabled()) {
-            return $url;
-        } elseif (!$this->configuration->isShortFilterUrlEnabled()) {
-            $url = $proceed();
-        }
-
-        $linkMaskingUrl = $this->url->getUrl(\MageSuite\SeoLinkMasking\Plugin\Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute\AddLinkMaskingToFilterData::LINK_MASKING_ENDPOINT);
-
-        return $this->postHelper->getPostData($linkMaskingUrl, ['url' => $url]);
+    if (!$maskingEnabled || $this->isCategoryFilter($filter->getRequestVar())) {
+        return $proceed();
     }
+
+    if (!$this->configuration->isShortFilterUrlEnabled()) {
+        $url = $proceed();
+    } else {
+        $url = $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
+    }
+
+    if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
+        return $url;
+    }
+
+    if (!$filter->getIsLinkMaskingEnabled()) {
+        return $url;
+    }
+
+    $linkMaskingUrl = $this->url->getUrl(\MageSuite\SeoLinkMasking\Plugin\Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute\AddLinkMaskingToFilterData::LINK_MASKING_ENDPOINT);
+
+    return $this->postHelper->getPostData($linkMaskingUrl, ['url' => $url]);
+}
 
     public function aroundGetRemoveUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed)
     {
