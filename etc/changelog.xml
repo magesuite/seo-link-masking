@@ -1,0 +1,12 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MageSuite_Changelog:etc/changelog.xsd">
+    <module id="MageSuite_SeoLinkMasking" name="MageSuite_SeoLinkMasking" description="The module allows masking/demasking filter URLs" url="https://www.github.com/magesuite/seo-link-masking">
+        <changelog>
+            <tag version="1.3.2" date="2022-08-08">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Added additional configuration to enable filter options in the filter URL when masking is enabled.</overview>
+                </entry>
+            </tag>
+        </changelog>
+    </module>
+</config>
