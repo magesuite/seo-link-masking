@@ -10,6 +10,7 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
     const LINK_MASKING_PARAMETER_REGISTRY_KEY = 'link_masking_parameters';
 
     const SEARCH_RESULT_PAGE_FULL_ACTION_NAME = 'catalogsearch_result_index';
+    const BRAND_PAGE_FULL_ACTION_NAME = 'brands_index_index';
 
     const AJAX_FILTER_FULL_ACTION_NAME = 'catalog_navigation_filter_ajax';
 
@@ -80,6 +81,11 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
     public function isSearchResultPage()
     {
         return $this->request->getFullActionName() == self::SEARCH_RESULT_PAGE_FULL_ACTION_NAME;
+    }
+
+    public function isBrandsIndexPage()
+    {
+        return $this->request->getFullActionName() == self::BRAND_PAGE_FULL_ACTION_NAME;
     }
 
     public function isSearchResultPageAjaxFilterCall()
