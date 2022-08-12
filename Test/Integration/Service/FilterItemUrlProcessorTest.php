@@ -162,27 +162,6 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoConfigFixture current_store seo/link_masking/enable_filter_params_in_filter_url 1
-     * @magentoDataFixture loadFilterableProducts
-     */
-    public function testItReturnsCorrectUrlForMaskedFilterWhenEnableFilterParamsInFilterUrlEnabled()
-    {
-        $this->filterHelper->method('isFilterMasked')->willReturn(true);
-
-        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
-
-        $response = json_decode($this->getResponse()->getBody(), true);
-
-        $urlContainPath = strpos($response[0]['url'], 'http://localhost/index.php/?multiselect_attribute=Option') !== false;
-        $this->assertTrue($urlContainPath);
-    }
-
-    /**
-     * @magentoAppArea frontend
-     * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
-     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoDataFixture loadFilterableProductsWithBrand
      */
     public function testItReturnsCorrectFilteredProductsOnBrandPage()
@@ -223,7 +202,7 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
         if (!$this->moduleManager->isEnabled('MageSuite_BrandManagement')) {
             $this->markTestSkipped('Test skipped because MageSuite_BrandManagement module is disabled');
         }
-        
+
         $this->filterHelper->method('isFilterMasked')->willReturn(true);
 
         $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_POST);
