@@ -98,11 +98,6 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return (bool)$this->getConfig()->getIsUtfFriendlyModeEnabled();
     }
 
-    public function areFilterParamsInFilterUrlEnabled()
-    {
-        return (bool)$this->getConfig()->getEnableFilterParamsInFilterUrl();
-    }
-
     public function getExcludedCharacters()
     {
         $excludedCharacters = $this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS);
