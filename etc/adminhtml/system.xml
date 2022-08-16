@@ -74,13 +74,6 @@
                         <![CDATA[These characters will be removed from option label in URL. Example: %!&]]>
                     </comment>
                 </field>
-                <field id="enable_filter_params_in_filter_url" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enable filter params in filter url</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>
-                        <![CDATA[When enabled, the filter url will contain the filter parameters in the form key=value. Example: "domain.com/category/blue/XS" before, "domain.com/category?color=blue&size=XS" after. ]]>
-                    </comment>
-                </field>
             </group>
         </section>
     </system>

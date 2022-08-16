@@ -21,6 +21,12 @@
                     <description></description>
                 </entry>
             </tag>
+            <tag version="1.3.4" date="2022-08-12">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Revert changes from tag 1.3.2 and fix filter around url plugin</overview>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
