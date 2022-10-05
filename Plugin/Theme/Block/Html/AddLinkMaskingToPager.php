@@ -25,7 +25,7 @@ class AddLinkMaskingToPager
 
     protected function getLinkMaskedPagerUrl(\Magento\Theme\Block\Html\Pager $pager, $params = [])
     {
-        $url = $pager->getRequest()->getUriString();
+        $url = $pager->getRequest()->getUriString() ?? '';
 
         $fragment = $pager->getFragment();
         $paginationParam = $pager->getPageVarName();
