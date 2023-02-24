@@ -30,8 +30,8 @@
             <tag version="1.5.0" date="2023-02-15">
                 <entry>
                     <type>FEATURE</type>
+                    <overview>There will be notification in admin panel with warning that options in filterable, searchable frontend attributes need to be unique. In case when they are not, warning will be displayed if module is enabled in admin panel, option "Enable hiding of filter names in URL" is also enabled and option "Enable displaying warnings about duplicated options in attributes" is also enabled.</overview>
                     <ticket_id>KRG-2347</ticket_id>
-                    <overview>Added notification in admin panel with warning that options in filterable, searchable frontend attributes need to be unique in case when they are not. Warning will be displayed if module is enabled in admin panel and option "Enable hiding of filter names in URL" is also enabled.</overview>
                 </entry>
             </tag>
         </changelog>
