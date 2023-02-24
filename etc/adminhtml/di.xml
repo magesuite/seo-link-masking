@@ -5,4 +5,13 @@
     <type name="Magento\Catalog\Model\Category\DataProvider">
         <plugin name="seo_link_masking_data_provider" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Category\DataProvider\AddFilterableAttributes" />
     </type>
+
+    <type name="Magento\Framework\Notification\MessageList">
+        <arguments>
+            <argument name="messages" xsi:type="array">
+                <item name="seo_link_masking" xsi:type="string">MageSuite\SeoLinkMasking\Model\System\Message\NotificationAboutDuplicatedOptions</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>

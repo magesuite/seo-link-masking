@@ -143,7 +143,7 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 0
      * @magentoDataFixture loadFilterableProducts
      */
-    public function testItReturnsCorrectUrlFilterUrlIfMaskingIsEnabledButShortFilterUrlIdDisabled()
+    public function testItReturnsCorrectUrlFilterUrlIfMaskingIsEnabledButShortFilterUrlIsDisabled()
     {
         $this->filterHelper->method('isFilterMasked')->willReturn(true);
 
