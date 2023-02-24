@@ -63,6 +63,16 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return (bool)$this->getConfig()->getIsShortFilterUrlEnabled();
     }
 
+    public function isDisplayingWarningAboutDuplicatedOptionsEnabled(): bool
+    {
+        return (bool)$this->getConfig()->getIsDisplayingWarningAboutDuplicatedOptionsEnabled();
+    }
+
+    public function getCacheLengthForWarningAboutDuplicatedOptions(): int
+    {
+        return (int)$this->getConfig()->getCacheLengthForWarningAboutDuplicatedOptions();
+    }
+
     public function areFilterParamsInCanonicalEnabled()
     {
         return (bool)$this->getConfig()->getEnableFilterParamsInCanonical();
