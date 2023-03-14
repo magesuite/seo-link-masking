@@ -12,12 +12,20 @@ class DuplicatedOptionsNotifierTest extends \PHPUnit\Framework\TestCase
 
     protected ?\MageSuite\SeoLinkMasking\Service\DuplicatedOptionsNotifier $duplicatedOptionsNotifier;
 
+    public const RESTRICT_TESTED_ATTRIBUTES_TO_GIVEN_LIST = [
+        'select_attribute_with_not_unique_options',
+        'select_attribute_with_unique_options',
+        'first_attribute_with_unique_options_per_attribute',
+        'second_attribute_with_unique_options_per_attribute'
+    ];
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->duplicatedOptionsNotifier = $this->objectManager->get(\MageSuite\SeoLinkMasking\Service\DuplicatedOptionsNotifier::class);
+        $this->duplicatedOptionsNotifier->restrictAttributesCheckToGivenList(self::RESTRICT_TESTED_ATTRIBUTES_TO_GIVEN_LIST);
     }
 
     /**

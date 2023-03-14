@@ -4,6 +4,8 @@ namespace MageSuite\SeoLinkMasking\Service;
 
 class DuplicatedOptionsNotifier
 {
+    protected ?array $restrictedAttributesList = null;
+
     public const CACHE_TAG = 'filter_attribute_duplicated_options';
 
     protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration;
@@ -30,6 +32,11 @@ class DuplicatedOptionsNotifier
         $this->serializer = $serializer;
         $this->attributeCollectionFactory = $attributeCollectionFactory;
         $this->url = $url;
+    }
+
+    public function restrictAttributesCheckToGivenList(array $restrictedAttributesList): void
+    {
+        $this->restrictedAttributesList = $restrictedAttributesList;
     }
 
     public function isWarningDisplayed(): bool
@@ -66,6 +73,13 @@ class DuplicatedOptionsNotifier
         $options = [];
 
         foreach ($attributeCollection as $attribute) {
+
+            if (isset($this->restrictAttributesToGivenList) &&
+                !in_array($attribute->getAttributeCode(), $this->restrictAttributesToGivenList)
+            ) {
+                continue;
+            }
+
             /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attribute */
             foreach ($attribute->getOptions() as $option) {
                 if (!$option->getValue()) {
