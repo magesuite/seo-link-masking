@@ -74,8 +74,8 @@ class DuplicatedOptionsNotifier
 
         foreach ($attributeCollection as $attribute) {
 
-            if (isset($this->restrictAttributesToGivenList) &&
-                !in_array($attribute->getAttributeCode(), $this->restrictAttributesToGivenList)
+            if (isset($this->restrictedAttributesList) &&
+                !in_array($attribute->getAttributeCode(), $this->restrictedAttributesList)
             ) {
                 continue;
             }
