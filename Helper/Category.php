@@ -4,29 +4,18 @@ namespace MageSuite\SeoLinkMasking\Helper;
 
 class Category
 {
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
-     */
-    protected $categoryRepository;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Configuration
-     */
-    protected $configuration;
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+    protected \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
+    protected \MageSuite\SeoLinkMasking\Helper\Page $pageHelper;
 
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
+        \MageSuite\SeoLinkMasking\Helper\Page $pageHelper
     ) {
         $this->storeManager = $storeManager;
         $this->categoryRepository = $categoryRepository;
-        $this->configuration = $configuration;
+        $this->pageHelper = $pageHelper;
     }
 
     public function getCategoryEntityForSearchResultPage($category)
@@ -35,9 +24,9 @@ class Category
             return $category;
         }
 
-        if ($this->configuration->isSearchResultPageAjaxFilterCall() ||
-            $this->configuration->isSearchResultPage() ||
-            $this->configuration->isBrandsIndexPage()
+        if ($this->pageHelper->isSearchResultPageAjaxFilterCall() ||
+            $this->pageHelper->isSearchResultPage() ||
+            $this->pageHelper->isBrandsIndexPage()
         ) {
             $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
             return $this->categoryRepository->get($rootCategoryId);

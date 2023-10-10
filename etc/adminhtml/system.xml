@@ -32,28 +32,32 @@
                         <![CDATA[By enabling this option, only one filter will be demasked. If customer choose any filter, the rest will be masked.]]>
                     </comment>
                 </field>
-                <field id="is_short_filter_url_enabled" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="mask_category_url_on_search_page" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable masking for category url on search</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="is_short_filter_url_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable hiding of filter names in URL</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
                         <![CDATA[When enabled, filters in URL will contain only the value, without the key. Example: "domain.com/category?color=blue&size=XS" before, "domain.com/category/blue/XS" after. <strong style="color:red">Warning</strong>: Do not use this option when attributes contain the same values, like "color=<span style="color:blue">blue</span>" and "print_color=<span style="color:blue">blue</span>".]]>
                     </comment>
                 </field>
-                <field id="is_displaying_warning_about_duplicated_options_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="is_displaying_warning_about_duplicated_options_enabled" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable displaying warnings about duplicated options in attributes</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
                         When "Enable hiding of filter names in URL" is enabled and there will be duplicated options in searchable filterable frontend attributes - permanent warning will be displayed in the notification area with information which options in which attributes is duplicated. Information about such duplicates is cached and refreshed once per 24h.
                     </comment>
                 </field>
-                <field id="cache_length_for_warning_about_duplicated_options" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="cache_length_for_warning_about_duplicated_options" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Cache length for warnings about duplicated options in attributes</label>
                     <validate>required-entry validate-number validate-digits validate-not-negative-number validate-zero-or-greater</validate>
                     <comment>
                         Duration of cache length in seconds for warning about duplicated options in filterable frontend attributes.
                     </comment>
                 </field>
-                <field id="enable_filter_params_in_canonical" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="enable_filter_params_in_canonical" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable filter params in canonical tag</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
@@ -63,26 +67,26 @@
                         <field id="is_short_filter_url_enabled">1</field>
                     </depends>
                 </field>
-                <field id="space_replacement_character" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="space_replacement_character" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Space replacement character</label>
                     <comment>
                         <![CDATA[This character will be used instead of space in the option label in the URL.]]>
                     </comment>
                 </field>
-                <field id="multiselect_option_separator" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="multiselect_option_separator" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Option Separator</label>
                     <comment>
                         <![CDATA[This separator will be used to separate options in multiselect filter.]]>
                     </comment>
                 </field>
-                <field id="is_utf_friendly_mode_enabled" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="is_utf_friendly_mode_enabled" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Is Utf Friendly Mode Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
                         <![CDATA[By enabling this option, filter parameters will be converted to utf friendly format - umlauts characters would converted.]]>
                     </comment>
                 </field>
-                <field id="excluded_characters" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="excluded_characters" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Excluded characters</label>
                     <comment>
                         <![CDATA[These characters will be removed from option label in URL. Example: %!&]]>

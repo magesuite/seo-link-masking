@@ -293,7 +293,7 @@ class FilterItemUrlProcessor
 
     public function getUrl($category, $requestParameters)
     {
-        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
+        if ($this->request->getFullActionName() != \MageSuite\SeoLinkMasking\Helper\Page::AJAX_FILTER_FULL_ACTION_NAME) {
             return $this->url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $requestParameters]);
         }
 

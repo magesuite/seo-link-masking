@@ -6,6 +6,7 @@
                 <is_enabled>0</is_enabled>
                 <default_masking_state>0</default_masking_state>
                 <only_one_filter_demasked>0</only_one_filter_demasked>
+                <mask_category_url_on_search_page>0</mask_category_url_on_search_page>
                 <is_short_filter_url_enabled>0</is_short_filter_url_enabled>
                 <is_displaying_warning_about_duplicated_options_enabled>1</is_displaying_warning_about_duplicated_options_enabled>
                 <cache_length_for_warning_about_duplicated_options>10800</cache_length_for_warning_about_duplicated_options>
