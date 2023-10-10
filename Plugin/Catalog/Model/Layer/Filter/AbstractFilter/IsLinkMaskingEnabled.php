@@ -62,7 +62,7 @@ class IsLinkMaskingEnabled
 
     protected function getCategory($subject)
     {
-        if ($this->request->getFullActionName() == \MageSuite\SeoLinkMasking\Helper\Configuration::AJAX_FILTER_FULL_ACTION_NAME) {
+        if ($this->request->getFullActionName() == \MageSuite\SeoLinkMasking\Helper\Page::AJAX_FILTER_FULL_ACTION_NAME) {
             return $subject->getLayer()->getCurrentCategory();
         }
 

@@ -2,113 +2,92 @@
 
 namespace MageSuite\SeoLinkMasking\Helper;
 
-class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
+class Configuration
 {
-    const XML_PATH_SEO_LINK_MASKING_CONFIGURATION = 'seo/link_masking';
-    const XML_PATH_SEO_LINK_MASKING_SPACE_REPLACEMENT_CHAR = 'seo/link_masking/space_replacement_character';
-    const XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS = 'seo/link_masking/excluded_characters';
-    const LINK_MASKING_PARAMETER_REGISTRY_KEY = 'link_masking_parameters';
+    public const LINK_MASKING_PARAMETER_REGISTRY_KEY = 'link_masking_parameters';
 
-    const SEARCH_RESULT_PAGE_FULL_ACTION_NAME = 'catalogsearch_result_index';
-    const BRAND_PAGE_FULL_ACTION_NAME = 'brands_index_index';
+    public const XML_PATH_SEO_LINK_MASKING_IS_ENABLED = 'seo/link_masking/is_enabled';
+    public const XML_PATH_SEO_LINK_MASKING_DEFAULT_MASKING_STATE = 'seo/link_masking/default_masking_state';
+    public const XML_PATH_SEO_LINK_MASKING_ONLY_ONE_FILTER_DEMASKED = 'seo/link_masking/only_one_filter_demasked';
+    public const XML_PATH_SEO_LINK_MASKING_MASK_CATEGORY_URL_ON_SEARCH_PAGE = 'seo/link_masking/mask_category_url_on_search_page';
+    public const XML_PATH_SEO_LINK_MASKING_IS_SHORT_FILTER_URL_ENABLED = 'seo/link_masking/is_short_filter_url_enabled';
+    public const XML_PATH_SEO_LINK_MASKING_IS_DISPLAYING_WARNING_ABOUT_DUPLICATED_OPTIONS_ENABLED = 'seo/link_masking/is_displaying_warning_about_duplicated_options_enabled';
+    public const XML_PATH_SEO_LINK_MASKING_CACHE_LENGTH_FOR_WARNING_ABOUT_DUPLICATED_OPTIONS = 'seo/link_masking/cache_length_for_warning_about_duplicated_options';
+    public const XML_PATH_SEO_LINK_MASKING_ENABLE_FILTER_PARAMS_IN_CANONICAL = 'seo/link_masking/enable_filter_params_in_canonical';
+    public const XML_PATH_SEO_LINK_MASKING_SPACE_REPLACEMENT_CHAR = 'seo/link_masking/space_replacement_character';
+    public const XML_PATH_SEO_LINK_MASKING_MULTISELECT_OPTION_SEPARATOR = 'seo/link_masking/multiselect_option_separator';
+    public const XML_PATH_SEO_LINK_MASKING_IS_UTF_FRIENDLY_MODE_ENABLED = 'seo/link_masking/is_utf_friendly_mode_enabled';
+    public const XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS = 'seo/link_masking/excluded_characters';
 
-    const AJAX_FILTER_FULL_ACTION_NAME = 'catalog_navigation_filter_ajax';
+    public const XML_PATH_SHOW_SWATCH_TOOLTIP = 'catalog/frontend/show_swatch_tooltip';
 
-    const XML_PATH_SHOW_SWATCH_TOOLTIP = 'catalog/frontend/show_swatch_tooltip';
+    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
-     * @var \Magento\Framework\App\Request\Http
-     */
-    protected $request;
-
-    protected $config = null;
-
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
-        \Magento\Framework\App\Request\Http $request
-    ) {
-        parent::__construct($context);
-
+    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface)
+    {
         $this->scopeConfig = $scopeConfigInterface;
-        $this->request = $request;
     }
 
-    public function getDefaultMaskingState()
+    public function isLinkMaskingEnabled($storeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_IS_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    public function getDefaultMaskingState($storeId = null): bool
     {
         if (!$this->isLinkMaskingEnabled()) {
             return false;
         }
 
-        return (bool)$this->getConfig()->getDefaultMaskingState();
+        return (bool)$this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_DEFAULT_MASKING_STATE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
-    public function isLinkMaskingEnabled()
+    public function onlyOneFilterDemasked($storeId = null): bool
     {
-        return (bool)$this->getConfig()->getIsEnabled();
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_ONLY_ONE_FILTER_DEMASKED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
-    public function onlyOneFilterDemasked()
+    public function maskCategoryUrlOnSearchPage($storeId = null): bool
     {
-        return (bool)$this->getConfig()->getOnlyOneFilterDemasked();
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_MASK_CATEGORY_URL_ON_SEARCH_PAGE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
-    public function isShortFilterUrlEnabled()
+    public function isShortFilterUrlEnabled($storeId = null): bool
     {
-        return (bool)$this->getConfig()->getIsShortFilterUrlEnabled();
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_IS_SHORT_FILTER_URL_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     public function isDisplayingWarningAboutDuplicatedOptionsEnabled(): bool
     {
-        return (bool)$this->getConfig()->getIsDisplayingWarningAboutDuplicatedOptionsEnabled();
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_IS_DISPLAYING_WARNING_ABOUT_DUPLICATED_OPTIONS_ENABLED);
     }
 
     public function getCacheLengthForWarningAboutDuplicatedOptions(): int
     {
-        return (int)$this->getConfig()->getCacheLengthForWarningAboutDuplicatedOptions();
+        return (int)$this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_CACHE_LENGTH_FOR_WARNING_ABOUT_DUPLICATED_OPTIONS);
     }
 
-    public function areFilterParamsInCanonicalEnabled()
+    public function areFilterParamsInCanonicalEnabled($storeId = null): bool
     {
-        return (bool)$this->getConfig()->getEnableFilterParamsInCanonical();
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_ENABLE_FILTER_PARAMS_IN_CANONICAL, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
-    public function getSpaceReplacementCharacter()
+    public function getSpaceReplacementCharacter(): string
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_SPACE_REPLACEMENT_CHAR);
+        return (string)$this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_SPACE_REPLACEMENT_CHAR);
     }
 
-    public function getMultiselectOptionSeparator()
+    public function getMultiselectOptionSeparator($storeId = null): string
     {
-        return $this->getConfig()->getMultiselectOptionSeparator();
+        return (string)$this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_MULTISELECT_OPTION_SEPARATOR, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
-    public function isSearchResultPage()
+    public function isUtfFriendlyModeEnabled($storeId = null): bool
     {
-        return $this->request->getFullActionName() == self::SEARCH_RESULT_PAGE_FULL_ACTION_NAME;
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SEO_LINK_MASKING_IS_UTF_FRIENDLY_MODE_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 
-    public function isBrandsIndexPage()
-    {
-        return $this->request->getFullActionName() == self::BRAND_PAGE_FULL_ACTION_NAME;
-    }
-
-    public function isSearchResultPageAjaxFilterCall()
-    {
-        return !$this->request->getParam('cat') && ($this->request->getFullActionName() == self::AJAX_FILTER_FULL_ACTION_NAME);
-    }
-
-    public function isUtfFriendlyModeEnabled()
-    {
-        return (bool)$this->getConfig()->getIsUtfFriendlyModeEnabled();
-    }
-
-    public function getExcludedCharacters()
+    public function getExcludedCharacters(): array
     {
         $excludedCharacters = $this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS);
 
@@ -122,19 +101,8 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         );
     }
 
-    protected function getConfig()
+    public function canShowSwatchTooltip($storeId = null): bool
     {
-        if ($this->config === null) {
-            $this->config = new \Magento\Framework\DataObject(
-                $this->scopeConfig->getValue(self::XML_PATH_SEO_LINK_MASKING_CONFIGURATION, \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
-            );
-        }
-
-        return $this->config;
-    }
-
-    public function canShowSwatchTooltip()
-    {
-        return $this->scopeConfig->getValue(self::XML_PATH_SHOW_SWATCH_TOOLTIP, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_SHOW_SWATCH_TOOLTIP, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

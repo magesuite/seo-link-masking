@@ -36,8 +36,3 @@
         <plugin name="add_filter_params_to_canonical_link" type="MageSuite\SeoLinkMasking\Plugin\Catalog\Block\Category\View\AddFilterParamsToCanonicalLink" sortOrder="10" />
     </type>
 </config>
-
-
-
-
-

@@ -28,7 +28,7 @@ class Url extends \Magento\Framework\App\Helper\AbstractHelper
 
         $spaceReplacementCharacter = $this->configuration->getSpaceReplacementCharacter();
 
-        if (!$spaceReplacementCharacter || $spaceReplacementCharacter == self::DEFAULT_SPACE_REPLACEMENT_CHAR) {
+        if (empty($spaceReplacementCharacter) || $spaceReplacementCharacter == self::DEFAULT_SPACE_REPLACEMENT_CHAR) {
             return $value;
         }
 
