@@ -6,7 +6,8 @@ class RenderLayered implements \Magento\Framework\View\Element\Block\ArgumentInt
 {
     protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration;
 
-    public function __construct(\MageSuite\SeoLinkMasking\Helper\Configuration $configuration) {
+    public function __construct(\MageSuite\SeoLinkMasking\Helper\Configuration $configuration)
+    {
         $this->configuration = $configuration;
     }
 
