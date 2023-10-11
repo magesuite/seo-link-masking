@@ -14,7 +14,8 @@
 $swatchData = $block->getSwatchData();
 // Post-Redirect-Get
 $postDataHelper = $this->helper(\Magento\Framework\Data\Helper\PostHelper::class);
-$configurationHelper = $this->helper(\MageSuite\SeoLinkMasking\Helper\Configuration::class);
+/** @var \MageSuite\SeoLinkMasking\ViewModel\LayeredNavigation\RenderLayered $viewModel */
+$viewModel = $block->getViewModel();
 $isLinkMaskingEnabled = $swatchData['is_link_masking_enabled'];
 $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
 ?>
@@ -93,7 +94,7 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
     </div>
 </div>
 
-<?php if ($configurationHelper->canShowSwatchTooltip()):?>
+<?php if ($viewModel->canShowSwatchTooltip()):?>
     <script>
         require(["jquery", "Magento_Swatches/js/swatch-renderer"], function ($) {
             $('.swatch-layered.<?= /* @escapeNotVerified */ $swatchData['attribute_code'] ?>')

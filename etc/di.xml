@@ -11,6 +11,7 @@
         <arguments>
             <argument name="data" xsi:type="array">
                 <item name="template" xsi:type="string">MageSuite_SeoLinkMasking::product/layered/renderer.phtml</item>
+                <item name="view_model" xsi:type="object">MageSuite\SeoLinkMasking\ViewModel\LayeredNavigation\RenderLayered</item>
             </argument>
         </arguments>
     </type>
