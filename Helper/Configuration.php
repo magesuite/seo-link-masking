@@ -2,7 +2,7 @@
 
 namespace MageSuite\SeoLinkMasking\Helper;
 
-class Configuration
+class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 {
     public const LINK_MASKING_PARAMETER_REGISTRY_KEY = 'link_masking_parameters';
 
@@ -20,13 +20,6 @@ class Configuration
     public const XML_PATH_SEO_LINK_MASKING_EXCLUDED_CHARACTERS = 'seo/link_masking/excluded_characters';
 
     public const XML_PATH_SHOW_SWATCH_TOOLTIP = 'catalog/frontend/show_swatch_tooltip';
-
-    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
-
-    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface)
-    {
-        $this->scopeConfig = $scopeConfigInterface;
-    }
 
     public function isLinkMaskingEnabled($storeId = null): bool
     {
