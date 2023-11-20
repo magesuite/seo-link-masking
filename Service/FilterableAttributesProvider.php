@@ -7,60 +7,18 @@ class FilterableAttributesProvider
     const CACHE_LIFETIME = 86400;
     const CACHE_TAG = 'category_filter_attributes_%s_%s';
 
-    /**
-     * @var \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory
-     */
-    protected $attributeCollectionFactory;
-
-    /**
-     * @var \Smile\ElasticsuiteCore\Api\Search\ContextInterface
-     */
-    protected $searchContext;
-
-    /**
-     * @var \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\CollectionFactory
-     */
-    protected $fulltextCollectionFactory;
-
-    /**
-     * @var \Smile\ElasticsuiteCatalog\Model\Category\Filter\Provider
-     */
-    protected $filterProvider;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var \Magento\Framework\App\CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var \Magento\Framework\Serialize\SerializerInterface
-     */
-    protected $serializer;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Category
-     */
-    protected $categoryHelper;
-
-    /**
-     * @var \Magento\Framework\App\RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
-     */
-    protected $categoryRepository;
+    protected \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory;
+    protected \Smile\ElasticsuiteCore\Api\Search\ContextInterface $searchContext;
+    protected \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\CollectionFactory $fulltextCollectionFactory;
+    protected \Smile\ElasticsuiteCatalog\Model\Category\Filter\Provider $filterProvider;
+    protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration;
+    protected \Magento\Framework\App\CacheInterface $cache;
+    protected \Magento\Framework\Serialize\SerializerInterface $serializer;
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+    protected \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper;
+    protected \Magento\Framework\App\RequestInterface $request;
+    protected \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
+    protected \Magento\Framework\App\State $state;
 
     public function __construct(
         \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory,
@@ -73,7 +31,8 @@ class FilterableAttributesProvider
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper,
         \Magento\Framework\App\RequestInterface $request,
-        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
+        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
+        \Magento\Framework\App\State $state
     ) {
         $this->attributeCollectionFactory = $attributeCollectionFactory;
         $this->searchContext = $searchContext;
@@ -86,6 +45,7 @@ class FilterableAttributesProvider
         $this->categoryHelper = $categoryHelper;
         $this->request = $request;
         $this->categoryRepository = $categoryRepository;
+        $this->state = $state;
     }
 
     public function getList($currentCategory)
@@ -134,12 +94,12 @@ class FilterableAttributesProvider
         return $attributesList;
     }
 
-    private function getCacheKey($categoryId)
+    protected function getCacheKey($categoryId)
     {
         return sprintf(self::CACHE_TAG, $categoryId, $this->storeManager->getStore()->getId());
     }
 
-    private function getAttributes($category)
+    protected function getAttributes($category)
     {
         $collection = $this->attributeCollectionFactory->create(['category' => $category]);
 
@@ -153,7 +113,7 @@ class FilterableAttributesProvider
 
         $storeId = $this->getStoreId($category);
 
-        if ($storeId && $category->getId()) {
+        if ($storeId && $category->getId() && $this->state->getAreaCode() != \Magento\Framework\App\Area::AREA_ADMINHTML) {
             $this->searchContext
                 ->setCurrentCategory($category)
                 ->setStoreId($storeId);
@@ -178,7 +138,7 @@ class FilterableAttributesProvider
     {
         $storeId = $category->getStoreId();
 
-        if ($storeId) {
+        if (is_numeric($storeId)) {
             return $storeId;
         }
 
