@@ -47,6 +47,12 @@
                     <overview>Fix helper declaration in template, added view model for configuration value fetch</overview>
                 </entry>
             </tag>
+            <tag version="1.6.3" date="2023-11-20">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Skip loading faced data when category page is opened in admin panel</overview>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
