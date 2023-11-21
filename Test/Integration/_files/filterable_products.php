@@ -7,6 +7,7 @@ $defaultStoreId = 1;
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
 $options = $objectManager->create(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection::class);
+$cacheManager = $objectManager->get(\Magento\Framework\App\Cache\Manager::class);
 
 $options->setAttributeFilter($attribute->getId());
 $optionIds = $options->getAllIds();
@@ -84,3 +85,5 @@ $rewrite
     ->setStoreId($defaultStoreId);
 
 $rewriteResource->save($rewrite);
+
+$cacheManager->clean($cacheManager->getAvailableTypes());
