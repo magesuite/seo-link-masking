@@ -22,6 +22,10 @@ class Url extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function encodeValue($value)
     {
+        if (empty($value)) {
+            return $value;
+        }
+        
         $value = strtolower($value);
         $value = $this->removeExcludedCharacters($value);
         $value = urlencode($value);
