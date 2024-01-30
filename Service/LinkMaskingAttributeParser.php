@@ -38,7 +38,7 @@ class LinkMaskingAttributeParser
 
     public function convertAttributeAfterLoad($filterLinkMasking)
     {
-        $attributes = $this->serializer->unserialize($filterLinkMasking);
+        $attributes = is_array($filterLinkMasking) ? $filterLinkMasking : $this->serializer->unserialize($filterLinkMasking);
 
         $filterData = [];
 
