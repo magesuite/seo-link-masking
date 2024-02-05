@@ -29,7 +29,7 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_GET);
 
         $this->dispatch($url);
-        $this->assertEquals(\Zend\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
+        $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
     }
 
     public function testItReturnsErrorPageForMissingParameter()
@@ -40,7 +40,7 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
         );
 
         $this->dispatch('linkmasking/filter/redirect');
-        $this->assertEquals(\Zend\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
+        $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
     }
 
     public function testItReturnsRedirect()
@@ -51,7 +51,7 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
         );
 
         $this->dispatch('linkmasking/filter/redirect');
-        $this->assertEquals(\Zend\Http\Response::STATUS_CODE_302, $this->getResponse()->getHttpResponseCode());
+        $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_302, $this->getResponse()->getHttpResponseCode());
         $this->assertEquals('Location: http://localhost/index.php/contact/', (string)$this->getResponse()->getHeader('location'));
     }
 }

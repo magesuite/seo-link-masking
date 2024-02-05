@@ -36,14 +36,14 @@ class Redirect extends \Magento\Framework\App\Action\Action implements \Magento\
             $resultJson = $this->resultFactory
                 ->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON)
                 ->setStatusHeader(
-                    \Zend\Http\Response::STATUS_CODE_404,
+                    \Laminas\Http\Response::STATUS_CODE_404,
                     \Zend\Http\AbstractMessage::VERSION_11,
                     'Bad Request'
                 );
 
             $result = [
                 'error' => __('Bad Request'),
-                'errorcode' => \Zend\Http\Response::STATUS_CODE_404
+                'errorcode' => \Laminas\Http\Response::STATUS_CODE_404
             ];
 
             return $resultJson->setData($result);
