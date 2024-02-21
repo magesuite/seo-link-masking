@@ -8,9 +8,6 @@ class FilterableAttributesProvider
     const CACHE_TAG = 'category_filter_attributes_%s_%s';
 
     protected \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory;
-    protected \Smile\ElasticsuiteCore\Api\Search\ContextInterface $searchContext;
-    protected \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\CollectionFactory $fulltextCollectionFactory;
-    protected \Smile\ElasticsuiteCatalog\Model\Category\Filter\Provider $filterProvider;
     protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration;
     protected \Magento\Framework\App\CacheInterface $cache;
     protected \Magento\Framework\Serialize\SerializerInterface $serializer;
@@ -18,13 +15,9 @@ class FilterableAttributesProvider
     protected \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper;
     protected \Magento\Framework\App\RequestInterface $request;
     protected \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
-    protected \Magento\Framework\App\State $state;
 
     public function __construct(
         \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\FilterableAttribute\Category\CollectionFactory $attributeCollectionFactory,
-        \Smile\ElasticsuiteCore\Api\Search\ContextInterface $searchContext,
-        \Smile\ElasticsuiteCatalog\Model\ResourceModel\Product\Fulltext\CollectionFactory $fulltextCollectionFactory,
-        \Smile\ElasticsuiteCatalog\Model\Category\Filter\Provider $filterProvider,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
@@ -32,12 +25,8 @@ class FilterableAttributesProvider
         \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper,
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
-        \Magento\Framework\App\State $state
     ) {
         $this->attributeCollectionFactory = $attributeCollectionFactory;
-        $this->searchContext = $searchContext;
-        $this->fulltextCollectionFactory = $fulltextCollectionFactory;
-        $this->filterProvider = $filterProvider;
         $this->configuration = $configuration;
         $this->cache = $cache;
         $this->serializer = $serializer;
@@ -45,7 +34,6 @@ class FilterableAttributesProvider
         $this->categoryHelper = $categoryHelper;
         $this->request = $request;
         $this->categoryRepository = $categoryRepository;
-        $this->state = $state;
     }
 
     public function getList($currentCategory)
@@ -111,39 +99,6 @@ class FilterableAttributesProvider
             ->setOrder('position', \Magento\Framework\Api\SortOrder::SORT_ASC)
             ->setOrder('attribute_id', \Magento\Framework\Api\SortOrder::SORT_ASC);
 
-        $storeId = $this->getStoreId($category);
-
-        if ($storeId && $category->getId() && $this->state->getAreaCode() != \Magento\Framework\App\Area::AREA_ADMINHTML) {
-            $this->searchContext
-                ->setCurrentCategory($category)
-                ->setStoreId($storeId);
-
-            $fulltextCollection = $this->fulltextCollectionFactory->create();
-
-            $fulltextCollection
-                ->setStoreId($storeId)
-                ->addFieldToFilter('category_ids', $this->filterProvider->getQueryFilter($category));
-
-            $attributeSetIds = array_keys($fulltextCollection->getFacetedData('attribute_set_id'));
-
-            if (!empty($attributeSetIds)) {
-                $collection->setAttributeSetFilter($attributeSetIds);
-            }
-        }
-
         return $collection->getItems();
-    }
-
-    protected function getStoreId($category)
-    {
-        $storeId = $category->getStoreId();
-
-        if (is_numeric($storeId)) {
-            return $storeId;
-        }
-
-        $categoryStoreIds = array_filter($category->getStoreIds());
-
-        return current($categoryStoreIds);
     }
 }
