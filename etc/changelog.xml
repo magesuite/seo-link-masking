@@ -53,6 +53,12 @@
                     <overview>Skip loading faced data when category page is opened in admin panel</overview>
                 </entry>
             </tag>
+            <tag version="1.6.9" date="2024-02-09">
+                <entry>
+                    <type>PERFORMANCE</type>
+                    <overview>Fix performance on loading attribute list</overview>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
