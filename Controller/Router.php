@@ -28,19 +28,22 @@ class Router implements \Magento\Framework\App\RouterInterface
      * @var \Magento\Framework\Registry
      */
     protected $registry;
+    protected array $ignoredUrlPatterns = [];
 
     public function __construct(
         \MageSuite\SeoLinkMasking\Service\UrlRewriteFinder $urlRewriteFinder,
         \Magento\Framework\App\ActionFactory $actionFactory,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
         \MageSuite\SeoLinkMasking\Model\FilterParametersProcessor $filterParametersProcessor,
-        \Magento\Framework\Registry $registry
+        \Magento\Framework\Registry $registry,
+        array $ignoredUrlPatterns = []
     ) {
         $this->urlRewriteFinder = $urlRewriteFinder;
         $this->actionFactory = $actionFactory;
         $this->configuration = $configuration;
         $this->filterParametersProcessor = $filterParametersProcessor;
         $this->registry = $registry;
+        $this->ignoredUrlPatterns = $ignoredUrlPatterns;
     }
 
     public function match(\Magento\Framework\App\RequestInterface $request)
@@ -50,6 +53,13 @@ class Router implements \Magento\Framework\App\RouterInterface
         }
 
         $requestedUrl = trim($request->getPathInfo(), '/');
+
+        foreach ($this->ignoredUrlPatterns as $urlPattern) {
+            if (fnmatch($urlPattern, $requestedUrl)) {
+                return null;
+            }
+        }
+
         $rewrite = $this->urlRewriteFinder->findRewrite($requestedUrl);
 
         if (empty($rewrite)) {

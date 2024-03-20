@@ -83,24 +83,65 @@ class UrlRewriteFinder
     protected function findCategoryRewrite($pathInfo, $storeId)
     {
         $pathParts = explode('/', $pathInfo);
-        $rewrite = null;
+
         if (empty($storeId)) {
             $storeId = $this->storeManager->getStore()->getId();
         }
 
-        while (empty($rewrite) && !empty($pathParts)) {
-            $rewrite = $this->getRewrite(implode('/', $pathParts), $storeId);
+        $storeId = (int)$storeId;
+
+        $pathPartsCombinations = $this->getPathPartsCombinations($pathParts);
+        $rewrites = $this->getRewrites($pathPartsCombinations, $storeId);
+
+        if (empty($rewrites)) {
+            return null;
+        }
+
+        foreach ($pathPartsCombinations as $path) {
+            $rewrite = $this->findPathInReturnedRewrites($rewrites, $path);
+
+            if ($rewrite == null) {
+                continue;
+            }
+
+            return $rewrite;
+        }
+
+        return null;
+    }
+
+    protected function getRewrites(array $pathParts, int $storeId): array
+    {
+        return $this->urlFinder->findAllByData([
+            'request_path' => $pathParts,
+            'store_id' => $storeId
+        ]);
+    }
+
+    protected function getPathPartsCombinations(array $pathParts): array
+    {
+        $pathPartsCombinations = [];
+
+        foreach ($pathParts as $pathPart) {
+            if (empty($pathParts)) {
+                continue;
+            }
+
+            $pathPartsCombinations[] = implode('/', $pathParts);
             array_pop($pathParts);
         }
 
-        return $rewrite;
+        return $pathPartsCombinations;
     }
 
-    protected function getRewrite($requestPath, $storeId)
+    protected function findPathInReturnedRewrites(array $rewrites, string $path): ?\Magento\UrlRewrite\Service\V1\Data\UrlRewrite
     {
-        return $this->urlFinder->findOneByData([
-            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::REQUEST_PATH => $requestPath,
-            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::STORE_ID => $storeId,
-        ]);
+        foreach ($rewrites as $rewrite) {
+            if ($rewrite->getRequestPath() == $path) {
+                return $rewrite;
+            }
+        }
+
+        return null;
     }
 }

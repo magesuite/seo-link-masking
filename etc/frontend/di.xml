@@ -20,6 +20,14 @@
         </arguments>
     </type>
 
+    <type name="MageSuite\SeoLinkMasking\Controller\Router">
+        <arguments>
+            <argument name="ignoredUrlPatterns" xsi:type="array">
+                <item name="catalog_category_view" xsi:type="string">catalog/category/view/*</item>
+            </argument >
+        </arguments>
+    </type>
+
     <type name="Magento\Swatches\Block\LayeredNavigation\RenderLayered">
         <plugin name="add_link_masking_to_swatch_data" type="MageSuite\SeoLinkMasking\Plugin\Swatches\Block\LayeredNavigation\RenderLayered\AddLinkMaskingToSwatchData" />
     </type>
