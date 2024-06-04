@@ -13,6 +13,7 @@ class AdjustFilterItemUrl
     protected \Magento\Framework\UrlInterface $url;
     protected \Magento\Framework\Data\Helper\PostHelper $postHelper;
     protected \MageSuite\SeoLinkMasking\Service\FilterItemUrlProcessor $filterItemUrlProcessor;
+    protected \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
 
     public function __construct(
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
@@ -21,7 +22,8 @@ class AdjustFilterItemUrl
         \Magento\Framework\Registry $registry,
         \Magento\Framework\UrlInterface $url,
         \Magento\Framework\Data\Helper\PostHelper $postHelper,
-        \MageSuite\SeoLinkMasking\Service\FilterItemUrlProcessor $filterItemUrlProcessor
+        \MageSuite\SeoLinkMasking\Service\FilterItemUrlProcessor $filterItemUrlProcessor,
+        \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
     ) {
         $this->configuration = $configuration;
         $this->pageHelper = $pageHelper;
@@ -30,6 +32,7 @@ class AdjustFilterItemUrl
         $this->url = $url;
         $this->postHelper = $postHelper;
         $this->filterItemUrlProcessor = $filterItemUrlProcessor;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed)
@@ -91,7 +94,17 @@ class AdjustFilterItemUrl
     {
         $category = $this->registry->registry('current_category');
 
-        return ($category && $category->getId()) ? $category : null;
+        if ($category) {
+            return $category;
+        }
+
+        $categoryId = (int)$this->request->getParam(self::CATEGORY_FILTER_CODE);
+
+        if (!$categoryId) {
+            return null;
+        }
+
+        return $this->categoryRepository->get($categoryId);
     }
 
     protected function maskCategoryUrlOnSearchPage($url): string
