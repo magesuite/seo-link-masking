@@ -56,6 +56,8 @@ class AdjustFilterItemUrl
 
         if (!$this->configuration->isShortFilterUrlEnabled()) {
             $url = $proceed();
+        } elseif ($subject->getIsSelected()) {
+            $url = $this->filterItemUrlProcessor->prepareItemRemoveUrl($filter, $category, $subject->getValue());
         } else {
             $url = $this->filterItemUrlProcessor->prepareItemUrl($filter, $category, $subject->getValue());
         }
