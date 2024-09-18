@@ -85,5 +85,3 @@ $rewrite
     ->setStoreId($defaultStoreId);
 
 $rewriteResource->save($rewrite);
-
-$cacheManager->clean($cacheManager->getAvailableTypes());

@@ -2,34 +2,22 @@
 
 namespace MageSuite\SeoLinkMasking\Test\Integration\Service;
 
-/**
- * @magentoDbIsolation enabled
- * @magentoAppIsolation enabled
- *
- * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
- */
 class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     protected ?\Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
     protected ?\MageSuite\SeoLinkMasking\Helper\Filter $filterHelper;
-    protected ?\Magento\Framework\ObjectManagerInterface $objectManager;
-    protected ?\Magento\Framework\Registry $registry;
     protected ?\Magento\Framework\Module\Manager $moduleManager;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $this->categoryRepository = $this->objectManager->get(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
-        $this->registry = $this->objectManager->get(\Magento\Framework\Registry::class);
-        $this->moduleManager = $this->objectManager->get(\Magento\Framework\Module\Manager::class);
-
+        $this->categoryRepository = $this->_objectManager->get(\Magento\Catalog\Api\CategoryRepositoryInterface::class);
+        $this->moduleManager = $this->_objectManager->get(\Magento\Framework\Module\Manager::class);
         $this->filterHelper = $this->createStub(
             \MageSuite\SeoLinkMasking\Helper\Filter::class
         );
-
-        $this->objectManager->addSharedInstance($this->filterHelper, \MageSuite\SeoLinkMasking\Helper\Filter::class);
+        $this->_objectManager->addSharedInstance($this->filterHelper, \MageSuite\SeoLinkMasking\Helper\Filter::class);
     }
 
     /**
@@ -38,7 +26,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      */
     public function testLinkMaskingGetCorrectCategoryUrl()
     {
@@ -57,7 +46,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      */
     public function testLinkMaskingGetCorrectCategoryUrlWithNonAjaxRequest()
     {
@@ -76,7 +66,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      */
     public function testItReturnsCorrectUrlForMaskedFilterInAjaxRequest()
     {
@@ -99,7 +90,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 0
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      */
     public function testItReturnsCorrectUrlFilterUrlIfMaskingIsEnabledButShortFilterUrlIdDisabledInAjaxRequest()
     {
@@ -122,7 +114,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      */
     public function testLinkMaskingGetCorrectCategoryUrlSearchResult()
     {
@@ -141,7 +134,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 0
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      */
     public function testItReturnsCorrectUrlFilterUrlIfMaskingIsEnabledButShortFilterUrlIsDisabled()
     {
@@ -162,7 +156,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture loadFilterableProductsWithBrand
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products_with_brand.php
      */
     public function testItReturnsCorrectFilteredProductsOnBrandPage()
     {
@@ -195,7 +190,8 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture loadFilterableProductsWithBrand
+     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products_with_brand.php
      */
     public function testItGeneratesCorrectAjaxUrlForBrandPage()
     {
@@ -217,33 +213,5 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
 
         $urlContainPath = strpos($urlData['data']['url'], 'http://localhost/index.php/brands/test_brand/option') !== false;
         $this->assertTrue($urlContainPath);
-    }
-
-    public static function loadFilterableProducts()
-    {
-        require __DIR__.'/../_files/filterable_products.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
-    }
-
-    public static function loadFilterableProductsRollback()
-    {
-        require __DIR__.'/../_files/filterable_products_rollback.php';
-    }
-
-    public static function loadFilterableProductsWithBrand()
-    {
-        require __DIR__ . '/../_files/filterable_products_with_brand.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
-    }
-
-    public static function loadFilterableProductsWithBrandRollback()
-    {
-        require __DIR__ . '/../_files/filterable_products_with_brand_rollback.php';
     }
 }
