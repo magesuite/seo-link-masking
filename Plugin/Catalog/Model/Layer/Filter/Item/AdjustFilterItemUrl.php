@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
 namespace MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\Item;
 
 class AdjustFilterItemUrl
 {
-    const CATEGORY_FILTER_CODE = 'cat';
+    protected const CATEGORY_FILTER_CODE = 'cat';
 
     protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration;
     protected \MageSuite\SeoLinkMasking\Helper\Page $pageHelper;
@@ -35,11 +36,9 @@ class AdjustFilterItemUrl
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed)
+    public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed):string
     {
         $filter = $subject->getFilter();
-        $category = $this->getCategory();
-
         $maskingEnabled = $this->configuration->isShortFilterUrlEnabled() || $filter->getIsLinkMaskingEnabled();
 
         if (!$maskingEnabled) {
@@ -51,6 +50,12 @@ class AdjustFilterItemUrl
                 return $this->maskCategoryUrlOnSearchPage($proceed());
             }
 
+            return $proceed();
+        }
+
+        try {
+            $category = $this->getCategory();
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             return $proceed();
         }
 
@@ -75,24 +80,29 @@ class AdjustFilterItemUrl
         return $this->postHelper->getPostData($linkMaskingUrl, ['url' => $url]);
     }
 
-    public function aroundGetRemoveUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed)
+    public function aroundGetRemoveUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed):string
     {
         $filter = $subject->getFilter();
-        $category = $this->getCategory();
 
         if (!$this->configuration->isShortFilterUrlEnabled() || $this->isCategoryFilter($filter->getRequestVar())) {
+            return $proceed();
+        }
+
+        try {
+            $category = $this->getCategory();
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
             return $proceed();
         }
 
         return $this->filterItemUrlProcessor->prepareItemRemoveUrl($filter, $category, $subject->getLabel());
     }
 
-    private function isCategoryFilter($filterCode)
+    protected function isCategoryFilter(string $filterCode):bool
     {
         return $filterCode === self::CATEGORY_FILTER_CODE;
     }
 
-    protected function getCategory()
+    protected function getCategory():?\Magento\Catalog\Api\Data\CategoryInterface
     {
         $category = $this->registry->registry('current_category');
 
