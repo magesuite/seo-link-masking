@@ -59,6 +59,13 @@
                     <overview>Fix performance on loading attribute list</overview>
                 </entry>
             </tag>
+            <tag version="1.6.10" date="2024-09-19">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix NoSuchEntityException with not exisiting category id.</overview>
+                    <ticket_id>RKL-795</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
