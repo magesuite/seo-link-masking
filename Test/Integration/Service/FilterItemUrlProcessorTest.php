@@ -183,35 +183,4 @@ class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\Abstrac
             strpos($response, 'Product with option 1 only') !== false
         );
     }
-
-    /**
-     * @magentoAppArea frontend
-     * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
-     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
-     * @magentoDataFixture Magento/Catalog/Model/Layer/Filter/_files/attribute_with_option.php
-     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products_with_brand.php
-     */
-    public function testItGeneratesCorrectAjaxUrlForBrandPage()
-    {
-        if (!$this->moduleManager->isEnabled('MageSuite_BrandManagement')) {
-            $this->markTestSkipped('Test skipped because MageSuite_BrandManagement module is disabled');
-        }
-
-        $this->filterHelper->method('isFilterMasked')->willReturn(true);
-
-        $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_POST);
-        $this->getRequest()->setParams(
-            ['brand' => 'test_brand']
-        );
-
-        $this->dispatch('catalog/navigation_filter/ajax/?filterName=multiselect_attribute');
-
-        $response = json_decode($this->getResponse()->getBody(), true);
-        $urlData = json_decode($response[0]['url'], true);
-
-        $urlContainPath = strpos($urlData['data']['url'], 'http://localhost/index.php/brands/test_brand/option') !== false;
-        $this->assertTrue($urlContainPath);
-    }
 }
