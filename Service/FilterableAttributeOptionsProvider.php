@@ -4,33 +4,14 @@ namespace MageSuite\SeoLinkMasking\Service;
 
 class FilterableAttributeOptionsProvider
 {
-    const CACHE_LIFETIME = 86400;
-    const CACHE_TAG = 'filter_attribute_options_%s';
+    public const CACHE_LIFETIME = 86400;
+    public const CACHE_TAG = 'filter_attribute_options_%s';
 
-    /**
-     * @var \Magento\Framework\App\CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var \Magento\Framework\Serialize\SerializerInterface
-     */
-    protected $serializer;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory
-     */
-    protected $attributeCollectionFactory;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Url
-     */
-    protected $urlHelper;
+    protected \Magento\Framework\App\CacheInterface $cache;
+    protected \Magento\Framework\Serialize\SerializerInterface $serializer;
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+    protected \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeCollectionFactory;
+    protected \MageSuite\SeoLinkMasking\Helper\Url $urlHelper;
 
     public function __construct(
         \Magento\Framework\App\CacheInterface $cache,
@@ -46,9 +27,9 @@ class FilterableAttributeOptionsProvider
         $this->urlHelper = $urlHelper;
     }
 
-    public function getOptions($storeId = null)
+    public function getOptions($storeId = null): array
     {
-        $cacheKey = $this->getCacheKey($storeId);
+        $cacheKey = $this->getCacheKey((int)$storeId);
         $cachedData = $this->cache->load($cacheKey);
 
         if (!empty($cachedData)) {
@@ -90,7 +71,7 @@ class FilterableAttributeOptionsProvider
         return $options;
     }
 
-    private function getCacheKey($storeId = null)
+    public function getCacheKey(?int $storeId = null): string
     {
         if (empty($storeId)) {
             $storeId = $this->storeManager->getStore()->getId();
@@ -99,7 +80,7 @@ class FilterableAttributeOptionsProvider
         return sprintf(self::CACHE_TAG, $storeId);
     }
 
-    public function rewriteOption(\Magento\Framework\DataObject $parameterOptions)
+    public function rewriteOption(\Magento\Framework\DataObject $parameterOptions): array
     {
         if (!is_array($parameterOptions->getValue())) {
             $parameterOptions->setValue([$parameterOptions->getValue()]);

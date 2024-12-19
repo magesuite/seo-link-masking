@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<config
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="magesuite" translate="label" sortOrder="300">
             <label>MageSuite</label>
@@ -91,6 +90,10 @@
                     <comment>
                         <![CDATA[These characters will be removed from option label in URL. Example: %!&]]>
                     </comment>
+                </field>
+                <field id="clean_attribute_options_cache" translate="label" type="button" sortOrder="130" showInDefault="1">
+                    <frontend_model>MageSuite\SeoLinkMasking\Block\Adminhtml\System\Config\CleanAttributeOptionsCacheButton</frontend_model>
+                    <comment>Cleaning cache will resolve issue with not working filters after edit attribute options.</comment>
                 </field>
             </group>
         </section>
