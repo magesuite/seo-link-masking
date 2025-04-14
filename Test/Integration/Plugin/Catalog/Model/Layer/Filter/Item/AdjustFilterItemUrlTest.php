@@ -17,10 +17,12 @@ class AdjustFilterItemUrlTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-
+        $allowedMethodName = method_exists(\PHPUnit\Framework\MockObject\MockBuilder::class, 'onlyMethods')
+            ? 'onlyMethods'
+            : 'setMethods';
         $this->pageHelperMock = $this->getMockBuilder(\MageSuite\SeoLinkMasking\Helper\Page::class)
             ->disableOriginalConstructor()
-            ->setMethods(['isSearchResultPage', 'isBrandsIndexPage', 'isSearchResultPageAjaxFilterCall'])
+            ->$allowedMethodName(['isSearchResultPage', 'isBrandsIndexPage', 'isSearchResultPageAjaxFilterCall'])
             ->getMock();
 
         $objectManager->addSharedInstance(
