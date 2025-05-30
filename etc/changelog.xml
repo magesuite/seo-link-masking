@@ -66,6 +66,14 @@
                     <ticket_id>RKL-795</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.6.19" date="2025-05-30">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>A11y - adjust attribute search input field</overview>
+                    <description>Add aria-label to attribute search input field to improve a11y.</description>
+                    <ticket_id>KRG-3064</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
