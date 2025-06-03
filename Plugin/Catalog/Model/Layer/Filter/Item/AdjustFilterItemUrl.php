@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\Item;
 
 class AdjustFilterItemUrl
@@ -36,20 +37,23 @@ class AdjustFilterItemUrl
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed):string
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    public function aroundGetUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed): string
     {
+        if (!$this->configuration->isLinkMaskingEnabled()) {
+            return $proceed();
+        }
         $filter = $subject->getFilter();
+
+        if ($this->isCategoryFilter($filter->getRequestVar())) {
+            return $this->adjustCategoryFilterUrl($proceed());
+        }
+
         $maskingEnabled = $this->configuration->isShortFilterUrlEnabled() || $filter->getIsLinkMaskingEnabled();
 
         if (!$maskingEnabled) {
-            return $proceed();
-        }
-
-        if ($this->isCategoryFilter($filter->getRequestVar())) {
-            if ($this->configuration->maskCategoryUrlOnSearchPage() && $this->pageHelper->isSearchResultPage()) {
-                return $this->maskCategoryUrlOnSearchPage($proceed());
-            }
-
             return $proceed();
         }
 
@@ -80,7 +84,7 @@ class AdjustFilterItemUrl
         return $this->postHelper->getPostData($linkMaskingUrl, ['url' => $url]);
     }
 
-    public function aroundGetRemoveUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed):string
+    public function aroundGetRemoveUrl(\Magento\Catalog\Model\Layer\Filter\Item $subject, \Closure $proceed): string
     {
         $filter = $subject->getFilter();
 
@@ -97,12 +101,12 @@ class AdjustFilterItemUrl
         return $this->filterItemUrlProcessor->prepareItemRemoveUrl($filter, $category, $subject->getLabel());
     }
 
-    protected function isCategoryFilter(string $filterCode):bool
+    protected function isCategoryFilter(string $filterCode): bool
     {
         return $filterCode === self::CATEGORY_FILTER_CODE;
     }
 
-    protected function getCategory():?\Magento\Catalog\Api\Data\CategoryInterface
+    protected function getCategory(): ?\Magento\Catalog\Api\Data\CategoryInterface
     {
         $category = $this->registry->registry('current_category');
 
@@ -123,5 +127,14 @@ class AdjustFilterItemUrl
     {
         $linkMaskingUrl = $this->url->getUrl(\MageSuite\SeoLinkMasking\Plugin\Smile\ElasticsuiteCatalog\Block\Navigation\Renderer\Attribute\AddLinkMaskingToFilterData::LINK_MASKING_ENDPOINT);
         return $this->postHelper->getPostData($linkMaskingUrl, ['url' => $url]);
+    }
+
+    protected function adjustCategoryFilterUrl(string $url): string
+    {
+        if ($this->configuration->maskCategoryUrlOnSearchPage() && $this->pageHelper->isSearchResultPage()) {
+            $url = $this->maskCategoryUrlOnSearchPage($url);
+        }
+
+        return $url;
     }
 }
