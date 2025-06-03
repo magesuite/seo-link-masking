@@ -26,7 +26,11 @@ class Category implements \Magento\Framework\View\Element\Block\ArgumentInterfac
         $url = $this->escaper->escapeUrl($filterItem->getUrl());
         $format = self::REGULAR_CAT_FILTER_URL_FORMAT;
 
-        if ($this->configuration->maskCategoryUrlOnSearchPage() && $this->pageHelper->isSearchResultPage()) {
+        if (
+            $this->configuration->isLinkMaskingEnabled()
+            && $this->configuration->maskCategoryUrlOnSearchPage()
+            && $this->pageHelper->isSearchResultPage()
+        ) {
             $format = self::MASKED_CAT_FILTER_URL_FORMAT;
         }
 
