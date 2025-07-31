@@ -21,8 +21,8 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
 ?>
 
 <div class="swatch-attribute swatch-layered <?= $block->escapeHtmlAttr($swatchData['attribute_code']) ?>"
-     attribute-code="<?= $block->escapeHtmlAttr($swatchData['attribute_code']) ?>"
-     attribute-id="<?= $block->escapeHtmlAttr($swatchData['attribute_id']) ?>">
+     data-attribute-code="<?= $block->escapeHtmlAttr($swatchData['attribute_code']) ?>"
+     data-attribute-id="<?= $block->escapeHtmlAttr($swatchData['attribute_id']) ?>">
     <div class="swatch-attribute-options clearfix">
         <?php foreach ($swatchData['options'] as $option => $label) :?>
             <?php
@@ -35,7 +35,7 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
             ?>
             <a href="<?= $block->escapeUrl($swatchItemHref) ?>"
                aria-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
-               <?php if($isLinkMaskingEnabled): ?>
+                <?php if($isLinkMaskingEnabled): ?>
                     data-post='<?= $postDataHelper->getPostData($linkmaskingUrl, ['url' => $swatchItemUrl]); ?>'
                 <?php endif; ?>
                class="swatch-option-link-layered">
@@ -44,15 +44,10 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                         case '3':
                             ?>
                             <div class="swatch-option <?= $block->escapeHtmlAttr($label['custom_style']) ?>"
-                                option-type="3"
                                 data-option-type="3"
-                                option-id="<?= $block->escapeHtmlAttr($option) ?>"
                                 data-option-id="<?= $block->escapeHtmlAttr($option) ?>"
-                                option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
                                 data-option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
-                                option-tooltip-thumb=""
                                 data-option-tooltip-thumb=""
-                                option-tooltip-value=""
                                 data-option-tooltip-value="">
                             </div>
                             <?php break;
@@ -69,15 +64,10 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                             $escapedUrl = $block->escapeUrl($swatchImagePath);
                             ?>
                             <div class="swatch-option image <?= $block->escapeHtmlAttr($label['custom_style']) ?>"
-                                option-type="2"
                                 data-option-type="2"
-                                option-id="<?= $block->escapeHtmlAttr($option) ?>"
                                 data-option-id="<?= $block->escapeHtmlAttr($option) ?>"
-                                option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
                                 data-option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
-                                option-tooltip-thumb="<?= $block->escapeUrl($swatchThumbPath) ?>"
                                 data-option-tooltip-thumb="<?= $block->escapeUrl($swatchThumbPath) ?>"
-                                option-tooltip-value=""
                                 data-option-tooltip-value=""
                                 style="background: url(<?= /*  @noEscape */ $escapedUrl ?>) no-repeat center; background-size: initial;">
                             </div>
@@ -85,15 +75,10 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                         case '1':
                             ?>
                             <div class="swatch-option color <?= $block->escapeHtmlAttr($label['custom_style']) ?>"
-                                option-type="1"
                                 data-option-type="1"
-                                option-id="<?= $block->escapeHtmlAttr($option) ?>"
                                 data-option-id="<?= $block->escapeHtmlAttr($option) ?>"
-                                option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
                                 data-option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
-                                option-tooltip-thumb=""
                                 data-option-tooltip-thumb=""
-                                option-tooltip-value="<?= $block->escapeHtmlAttr($swatchOption['value']) ?>"
                                 data-option-tooltip-value="<?= $block->escapeHtmlAttr($swatchOption['value']) ?>"
                                 style="background: <?= $block->escapeHtmlAttr($swatchOption['value']) ?> no-repeat center; background-size: initial;">
                             </div>
@@ -102,15 +87,10 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                         default:
                             ?>
                             <div class="swatch-option text <?= $block->escapeHtmlAttr($label['custom_style']) ?>"
-                                option-type="0"
                                 data-option-type="0"
-                                option-id="<?= $block->escapeHtmlAttr($option) ?>"
                                 data-option-id="<?= $block->escapeHtmlAttr($option) ?>"
-                                option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
                                 data-option-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
-                                option-tooltip-thumb=""
                                 data-option-tooltip-thumb=""
-                                option-tooltip-value=""
                                 data-option-tooltip-value=""
                             >
                                 <?= $block->escapeHtml($swatchOption['value']) ?>
