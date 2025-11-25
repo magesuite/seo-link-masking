@@ -120,7 +120,11 @@ class AdjustFilterItemUrl
             return null;
         }
 
-        return $this->categoryRepository->get($categoryId);
+        try {
+            return $this->categoryRepository->get($categoryId);
+        } catch (\Exception|\Throwable) {
+            return null;
+        }
     }
 
     protected function maskCategoryUrlOnSearchPage($url): string
