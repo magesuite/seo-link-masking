@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace MageSuite\SeoLinkMasking\Test\Integration\Model;
 
 /**
@@ -10,11 +8,14 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Model;
  */
 class CategoryTest extends \PHPUnit\Framework\TestCase
 {
-    protected const CATEGORY_WITHOUT_LINK_MASKING = 777;
-    protected const CATEGORY_WITH_LINK_MASKING = 778;
-    protected const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
+    const CATEGORY_WITHOUT_LINK_MASKING = 777;
+    const CATEGORY_WITH_LINK_MASKING = 778;
+    const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
 
-    protected ?\Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
+    /**
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
+     */
+    protected $categoryRepository;
 
     public function setUp(): void
     {
@@ -28,15 +29,21 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDataFixture loadCategories
      * @dataProvider dataProvider
+     * @param integer $categoryId
+     * @param array|null $expectedFilterState
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function testItReturnsCorrectAttributeValue(int $categoryId, ?array $expectedFilterState): void
+    public function testItReturnsCorrectAttributeValue($categoryId, $expectedFilterState)
     {
         $category = $this->categoryRepository->get($categoryId);
 
         $this->assertEquals($category->getSeoLinkMasking(), $expectedFilterState);
     }
 
-    public static function dataProvider(): array
+    /**
+     * @return array
+     */
+    public function dataProvider()
     {
         return [
             [self::CATEGORY_WITHOUT_LINK_MASKING, null],
@@ -45,12 +52,12 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public static function loadCategories(): void
+    public static function loadCategories()
     {
         require __DIR__ . '/../_files/categories.php';
     }
 
-    public static function loadCategoriesRollback(): void
+    public static function loadCategoriesRollback()
     {
         require __DIR__ . '/../_files/categories_rollback.php';
     }
