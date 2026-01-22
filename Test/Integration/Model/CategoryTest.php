@@ -10,9 +10,9 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Model;
  */
 class CategoryTest extends \PHPUnit\Framework\TestCase
 {
-    public const CATEGORY_WITHOUT_LINK_MASKING = 777;
-    public const CATEGORY_WITH_LINK_MASKING = 778;
-    public const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
+    protected const CATEGORY_WITHOUT_LINK_MASKING = 777;
+    protected const CATEGORY_WITH_LINK_MASKING = 778;
+    protected const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
 
     protected ?\Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
 
