@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Model;
 
 /**
@@ -8,14 +10,11 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Model;
  */
 class CategoryTest extends \PHPUnit\Framework\TestCase
 {
-    const CATEGORY_WITHOUT_LINK_MASKING = 777;
-    const CATEGORY_WITH_LINK_MASKING = 778;
-    const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
+    protected const CATEGORY_WITHOUT_LINK_MASKING = 777;
+    protected const CATEGORY_WITH_LINK_MASKING = 778;
+    protected const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
 
-    /**
-     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
-     */
-    protected $categoryRepository;
+    protected \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
 
     public function setUp(): void
     {
@@ -27,38 +26,22 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadCategories
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/categories.php
      * @dataProvider dataProvider
-     * @param integer $categoryId
-     * @param array|null $expectedFilterState
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function testItReturnsCorrectAttributeValue($categoryId, $expectedFilterState)
+    public function testItReturnsCorrectAttributeValue(int $categoryId, ?array $expectedFilterState): void
     {
         $category = $this->categoryRepository->get($categoryId);
 
         $this->assertEquals($category->getSeoLinkMasking(), $expectedFilterState);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProvider()
+    public static function dataProvider(): array
     {
         return [
             [self::CATEGORY_WITHOUT_LINK_MASKING, null],
             [self::CATEGORY_WITH_LINK_MASKING, [1 => false, 2 => true, 3 => false]],
             [self::ROOT_CATEGORY_WITH_LINK_MASKING, [1 => false, 2 => true, 3 => false]]
         ];
-    }
-
-    public static function loadCategories()
-    {
-        require __DIR__ . '/../_files/categories.php';
-    }
-
-    public static function loadCategoriesRollback()
-    {
-        require __DIR__ . '/../_files/categories_rollback.php';
     }
 }

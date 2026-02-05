@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Controller;
 
 /**
@@ -26,7 +28,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      */
     public function testItSetFiltersByValues(): void
@@ -51,7 +53,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoConfigFixture default/seo/link_masking/space_replacement_character _
      */
@@ -77,7 +79,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoConfigFixture default/seo/link_masking/excluded_characters &
      */
@@ -103,7 +105,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      */
     public function testItSetFilterWithMultipleOptions(): void
@@ -129,7 +131,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      */
     public function testItSetFilterWithMultipleOptionsWithSlash(): void
@@ -149,16 +151,6 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->assertEquals(['Option 1', 'Option 2'], $parameters['multiselect_attribute']);
 
         $this->cache->remove($cacheKey);
-    }
-
-    public static function loadFilterableProducts(): void
-    {
-        require __DIR__ . '/../_files/filterable_products.php';
-    }
-
-    public static function loadFilterableProductsRollback(): void
-    {
-        require __DIR__ . '/../_files/filterable_products_rollback.php';
     }
 
     protected function getFilterableAttributeOptionsCacheKey(?int $storeId = null): string
