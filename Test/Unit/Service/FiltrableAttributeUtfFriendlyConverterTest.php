@@ -1,18 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Unit\Service;
 
 class FiltrableAttributeUtfFriendlyConverterTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $configurationStub;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter
-     */
-    protected $filtrableAttributeUtfFriendlyConverter;
+    protected ?\PHPUnit\Framework\MockObject\MockObject $configurationStub;
+    protected ?\MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter;
 
     protected function setUp(): void
     {
@@ -29,7 +24,7 @@ class FiltrableAttributeUtfFriendlyConverterTest extends \PHPUnit\Framework\Test
      * @param $expectedFilteredValues
      * @param $excludedCharacters
      */
-    public function testItReturnsCorrectValuesRoundUp($filteredValues, $expectedFilteredValues, $excludedCharacters)
+    public function testItReturnsCorrectValuesRoundUp(string $filteredValues, string $expectedFilteredValues, array $excludedCharacters): void
     {
         $this->configurationStub->method('getExcludedCharacters')->willReturn($excludedCharacters);
 
@@ -37,7 +32,7 @@ class FiltrableAttributeUtfFriendlyConverterTest extends \PHPUnit\Framework\Test
         $this->assertEquals($expectedFilteredValues, $convertedFilteredValues[0]);
     }
 
-    public static function getFilteredValues()
+    public static function getFilteredValues(): array
     {
         return [
             'regular param' => ['Parameter', 'Parameter', []],

@@ -1,31 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Model\StoreSwitcher;
 
 /**
- * Class RewriteUrlTest
- * @package Magento\UrlRewrite\Model\StoreSwitcher
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RewriteUrlTest extends \PHPUnit\Framework\TestCase
 {
-    const CATEGORY_WITH_LINK_MASKING = 778;
+    protected const CATEGORY_WITH_LINK_MASKING = 778;
 
-    /**
-     * @var \Magento\Store\Model\StoreSwitcher
-     */
-    protected $storeSwitcher;
+    protected \Magento\Store\Model\StoreSwitcher $storeSwitcher;
+    protected \Magento\Store\Api\StoreRepositoryInterface $storeRepository;
 
-    /**
-     * @var \Magento\Store\Api\StoreRepositoryInterface
-     */
-    protected $storeRepository;
-
-    /**
-     * Class dependencies initialization
-     *
-     * @return void
-     */
     protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -39,8 +27,7 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation disabled
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoDataFixture Magento/Store/_files/second_store.php
-     * @magentoDataFixture loadFilterableProductsMultistore
-     * @return void
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products_multistore.php
      */
     public function testSwitchToExistingPage(): void
     {
@@ -62,7 +49,6 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation disabled
      * @magentoConfigFixture current_store catalog/seo/category_url_suffix
      * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/two_categories_multistore.php
-     * @return void
      */
     public function testSwitchToProperCategoryPage(): void
     {
@@ -71,15 +57,5 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
         $expectedUrl = "http://localhost/index.php/category/subcategory-fixturestore.html";
 
         $this->assertEquals($expectedUrl, $this->storeSwitcher->switch($fromStore, $toStore, $expectedUrl));
-    }
-
-    public static function loadFilterableProductsMultistore()
-    {
-        require __DIR__.'/../../_files/filterable_products_multistore.php';
-    }
-
-    public static function loadFilterableProductsMultistoreRollback()
-    {
-        require __DIR__.'/../../_files/filterable_products_multistore_rollback.php';
     }
 }

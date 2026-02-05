@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Observer;
 
 /**
@@ -8,18 +10,18 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Observer;
  */
 class UpdateMetaRobotsTagTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    const ROBOTS_TAG_INDEX_FOLLOW = 'INDEX,FOLLOW';
+    protected const ROBOTS_TAG_INDEX_FOLLOW = 'INDEX,FOLLOW';
 
     /**
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/only_one_filter_demasked 1
      */
-    public function testItDoesntUpdateSeoMetaRobots()
+    public function testItDoesntUpdateSeoMetaRobots(): void
     {
         $this->dispatch('/test-category/option+1');
 
@@ -32,12 +34,12 @@ class UpdateMetaRobotsTagTest extends \Magento\TestFramework\TestCase\AbstractCo
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadFilterableProducts
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products.php
      * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
      * @magentoConfigFixture current_store seo/link_masking/only_one_filter_demasked 1
      */
-    public function testItUpdatesSeoMetaRobots()
+    public function testItUpdatesSeoMetaRobots(): void
     {
         $this->dispatch('/test-category/option+1--option+2');
 
@@ -45,15 +47,5 @@ class UpdateMetaRobotsTagTest extends \Magento\TestFramework\TestCase\AbstractCo
 
         $this->$assertContains('Multiselect Attribute', $this->getResponse()->getBody());
         $this->$assertContains(\MageSuite\SeoLinkMasking\Observer\UpdateMetaRobotsTag::ROBOTS_TAG_NOINDEX_FOLLOW, $this->getResponse()->getBody());
-    }
-
-    public static function loadFilterableProducts()
-    {
-        require __DIR__.'/../_files/filterable_products.php';
-    }
-
-    public static function loadFilterableProductsRollback()
-    {
-        require __DIR__.'/../_files/filterable_products_rollback.php';
     }
 }
