@@ -14,7 +14,7 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
     protected const CATEGORY_WITH_LINK_MASKING = 778;
     protected const ROOT_CATEGORY_WITH_LINK_MASKING = 2;
 
-    protected \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
+    protected ?\Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository;
 
     public function setUp(): void
     {

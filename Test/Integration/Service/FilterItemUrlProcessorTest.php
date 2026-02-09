@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Service;
 
 class FilterItemUrlProcessorTest extends \Magento\TestFramework\TestCase\AbstractController

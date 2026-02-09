@@ -11,8 +11,8 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
 {
     protected const CATEGORY_WITH_LINK_MASKING = 778;
 
-    protected \Magento\Store\Model\StoreSwitcher $storeSwitcher;
-    protected \Magento\Store\Api\StoreRepositoryInterface $storeRepository;
+    protected ?\Magento\Store\Model\StoreSwitcher $storeSwitcher;
+    protected ?\Magento\Store\Api\StoreRepositoryInterface $storeRepository;
 
     protected function setUp(): void
     {

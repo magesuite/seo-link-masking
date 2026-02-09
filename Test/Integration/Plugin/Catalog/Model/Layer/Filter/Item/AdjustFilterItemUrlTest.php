@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Plugin\Catalog\Model\Layer\Filter\Item;
 
 /**
