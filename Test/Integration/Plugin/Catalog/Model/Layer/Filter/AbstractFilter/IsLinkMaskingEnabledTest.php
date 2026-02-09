@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Plugin\Catalog\Model\Layer\Filter\AbstractFilter;
 
 /**
@@ -10,25 +12,10 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Plugin\Catalog\Model\Layer\F
  */
 class IsLinkMaskingEnabledTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $registry;
-
-    /**
-     * @var \Magento\Framework\App\Request\Http
-     */
-    protected $request;
-
-    /**
-     * @var \Magento\Catalog\Model\Layer\Filter\Attribute
-     */
-    protected $attributeFilter;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Framework\Registry $registry;
+    protected ?\Magento\Framework\App\Request\Http $request;
+    protected ?\Magento\Catalog\Model\Layer\Filter\Attribute $attributeFilter;
 
     protected function setUp(): void
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Model\System\Message;
 
 /**
@@ -9,7 +11,6 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Model\System\Message;
 class DuplicatedOptionsNotifierTest extends \PHPUnit\Framework\TestCase
 {
     protected ?\Magento\TestFramework\ObjectManager $objectManager;
-
     protected ?\MageSuite\SeoLinkMasking\Service\DuplicatedOptionsNotifier $duplicatedOptionsNotifier;
 
     public const RESTRICT_TESTED_ATTRIBUTES_TO_GIVEN_LIST = [

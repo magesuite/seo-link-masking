@@ -1,18 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Test\Integration\Controller\Filter;
 
 class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Framework\Data\Form\FormKey
-     */
-    protected $formKey;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Framework\Data\Form\FormKey $formKey;
 
     public function setUp(): void
     {
