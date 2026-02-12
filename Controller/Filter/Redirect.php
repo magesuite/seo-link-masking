@@ -1,38 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Controller\Filter;
 
 class Redirect extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
-    const REDIRECT_URL_PARAMETER = 'url';
-
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $resultFactory;
-
-    /**
-     * @var \Magento\Framework\UrlInterface
-     */
-    protected $urlInterface;
+    public const REDIRECT_URL_PARAMETER = 'url';
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\ResultFactory $resultFactory,
-        \Magento\Framework\UrlInterface $urlInterface
+        protected \Magento\Framework\UrlInterface $urlInterface,
+        protected \Magento\Framework\Url\HostChecker $hostChecker
     ) {
         parent::__construct($context);
-
-        $this->resultFactory = $resultFactory;
-        $this->urlInterface = $urlInterface;
     }
 
-    public function execute()
+    public function execute(): mixed
     {
         $redirectUrl = $this->getRequest()->getParam(self::REDIRECT_URL_PARAMETER, null);
+        $url = $this->urlInterface->getUrl($redirectUrl);
 
-        if (empty($redirectUrl)) {
-
+        if (empty($redirectUrl) || !$this->hostChecker->isOwnOrigin($url)) {
             $resultJson = $this->resultFactory
                 ->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON)
                 ->setStatusHeader(
@@ -50,7 +39,7 @@ class Redirect extends \Magento\Framework\App\Action\Action implements \Magento\
         }
 
         $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($this->urlInterface->getUrl($redirectUrl));
+        $resultRedirect->setUrl($url);
 
         return $resultRedirect;
     }
