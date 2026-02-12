@@ -6,18 +6,15 @@ namespace MageSuite\SeoLinkMasking\Test\Integration\Controller\Filter;
 
 class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    protected ?\Magento\TestFramework\ObjectManager $objectManager;
     protected ?\Magento\Framework\Data\Form\FormKey $formKey;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-
-        $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
-        $this->formKey = $this->objectManager->get(\Magento\Framework\Data\Form\FormKey::class);
+        $this->formKey = $this->_objectManager->get(\Magento\Framework\Data\Form\FormKey::class);
     }
 
-    public function testItReturns404ForGetRequest()
+    public function testItReturns404ForGetRequest(): void
     {
         $url = 'linkmasking/filter/redirect?url=contact&form_key=' . $this->formKey->getFormKey();
 
@@ -27,7 +24,7 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
     }
 
-    public function testItReturnsErrorPageForMissingParameter()
+    public function testItReturnsErrorPageForMissingParameter(): void
     {
         $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_POST);
         $this->getRequest()->setParams(
@@ -38,7 +35,7 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
     }
 
-    public function testItReturnsRedirect()
+    public function testItReturnsRedirect(): void
     {
         $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_POST);
         $this->getRequest()->setParams(
@@ -48,5 +45,16 @@ class RedirectTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->dispatch('linkmasking/filter/redirect');
         $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_302, $this->getResponse()->getHttpResponseCode());
         $this->assertEquals('Location: http://localhost/index.php/contact/', (string)$this->getResponse()->getHeader('location'));
+    }
+
+    public function testItReturnsErrorPageForParameterWithExternalUrl(): void
+    {
+        $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_POST);
+        $this->getRequest()->setParams(
+            [\MageSuite\SeoLinkMasking\Controller\Filter\Redirect::REDIRECT_URL_PARAMETER => 'http://example.com']
+        );
+
+        $this->dispatch('linkmasking/filter/redirect');
+        $this->assertEquals(\Laminas\Http\Response::STATUS_CODE_404, $this->getResponse()->getHttpResponseCode());
     }
 }
