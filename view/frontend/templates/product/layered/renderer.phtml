@@ -31,6 +31,9 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                 }
                 $swatchItemUrl = $label['link'];
                 $swatchItemHref = $isLinkMaskingEnabled ? '#' : $swatchItemUrl;
+                if (empty($swatchData['swatches'][$option])) {
+                    continue;
+                }
                 $swatchOption = $swatchData['swatches'][$option];
             ?>
             <a href="<?= $block->escapeUrl($swatchItemHref) ?>"
