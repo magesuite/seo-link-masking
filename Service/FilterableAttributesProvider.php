@@ -39,12 +39,7 @@ class FilterableAttributesProvider
     public function getList($currentCategory)
     {
         $currentCategory = $this->categoryHelper->getCategoryEntityForSearchResultPage($currentCategory);
-
-        if ($currentCategory) {
-            $categoryId = $currentCategory->getId();
-        } else {
-            $categoryId = $this->request->getParam('cat');
-        }
+        $categoryId = $currentCategory ? $currentCategory->getId() : (int)$this->request->getParam('cat');
 
         if (!$categoryId) {
             return [];
