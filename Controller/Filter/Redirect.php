@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace MageSuite\SeoLinkMasking\Controller\Filter;
 
-class Redirect extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
+class Redirect implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
     public const REDIRECT_URL_PARAMETER = 'url';
 
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
+        protected \Magento\Framework\App\RequestInterface $request,
+        protected \Magento\Framework\Controller\ResultFactory $resultFactory,
         protected \Magento\Framework\UrlInterface $urlInterface,
         protected \Magento\Framework\Url\HostChecker $hostChecker
-    ) {
-        parent::__construct($context);
-    }
+    ) {}
 
     public function execute(): mixed
     {
-        $redirectUrl = $this->getRequest()->getParam(self::REDIRECT_URL_PARAMETER, null);
+        $redirectUrl = $this->request->getParam(self::REDIRECT_URL_PARAMETER, null);
         $url = $this->urlInterface->getUrl($redirectUrl);
 
         if (empty($redirectUrl) || !$this->hostChecker->isOwnOrigin($url)) {

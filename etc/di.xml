@@ -44,4 +44,15 @@
         </arguments>
     </type>
 
+    <type name="MageSuite\SeoLinkMasking\Plugin\Magento\Framework\Session\SessionStartChecker\DisableSessionUrls">
+        <arguments>
+            <argument name="actionNameList" xsi:type="array">
+                <item name="redirect_controller" xsi:type="string">linkmasking/filter/redirect</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Session\SessionStartChecker">
+        <plugin name="linkmasking_disable_session_urls" type="MageSuite\SeoLinkMasking\Plugin\Magento\Framework\Session\SessionStartChecker\DisableSessionUrls" sortOrder="20"/>
+    </type>
 </config>
