@@ -20,6 +20,9 @@ class DisableSessionUrls
                 continue;
             }
 
+            // hack for persistent login
+            $this->request->setParam('ajax', true);
+
             return false;
         }
 
