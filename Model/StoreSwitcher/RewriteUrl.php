@@ -80,7 +80,7 @@ class RewriteUrl implements \Magento\Store\Model\StoreSwitcherInterface
             return $targetUrl;
         }
 
-        $oldStoreId = $fromStore->getId();
+        $oldStoreId = (int) $fromStore->getId();
         $oldRewrite = $this->urlRewriteFinder->findRewrite($urlPath, $oldStoreId);
 
         if ($oldRewrite) {

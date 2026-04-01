@@ -14,6 +14,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
     protected const DEFAULT_STORE_ID = 1;
 
     protected ?\Magento\Framework\App\CacheInterface $cache;
+    protected ?\MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider $filterableAttributeOptionsProvider;
 
     public function setUp(): void
     {
@@ -22,6 +23,9 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->cache = $objectManager->get(\Magento\Framework\App\CacheInterface::class);
+        $this->filterableAttributeOptionsProvider = $objectManager->get(
+            \MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider::class
+        );
     }
 
     /**
@@ -155,7 +159,7 @@ class RouterTest extends \Magento\TestFramework\TestCase\AbstractController
 
     protected function getFilterableAttributeOptionsCacheKey(?int $storeId = null): string
     {
-        return sprintf(\MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider::CACHE_TAG, $storeId);
+        return $this->filterableAttributeOptionsProvider->getCacheKey($storeId);
     }
 
     protected function getAssertContainsMethod(): string
