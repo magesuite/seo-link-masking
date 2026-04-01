@@ -14,3 +14,4 @@ foreach ($collection->addAttributeToFilter('entity_id', ['in' => [444, 555]]) as
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
+$resolver->requireDataFixture('Magento/Store/_files/second_store_rollback.php');
