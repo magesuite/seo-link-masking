@@ -1,33 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Service;
 
 class FilterableAttributeOptionsProvider
 {
     public const CACHE_LIFETIME = 86400;
-    public const CACHE_TAG = 'filter_attribute_options_%s';
-
-    protected \Magento\Framework\App\CacheInterface $cache;
-    protected \Magento\Framework\Serialize\SerializerInterface $serializer;
-    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
-    protected \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeCollectionFactory;
-    protected \MageSuite\SeoLinkMasking\Helper\Url $urlHelper;
+    public const CACHE_TAG = 'filter_attribute_options_%s_%s';
 
     public function __construct(
-        \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeCollectionFactory,
-        \MageSuite\SeoLinkMasking\Helper\Url $urlHelper
+        protected \Magento\Framework\App\CacheInterface $cache,
+        protected \Magento\Framework\Serialize\SerializerInterface $serializer,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
+        protected \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeCollectionFactory,
+        protected \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
+        protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
     ) {
-        $this->cache = $cache;
-        $this->serializer = $serializer;
-        $this->storeManager = $storeManager;
-        $this->attributeCollectionFactory = $attributeCollectionFactory;
-        $this->urlHelper = $urlHelper;
     }
 
-    public function getOptions($storeId = null): array
+    public function getOptions(?int $storeId = null): array
     {
         $cacheKey = $this->getCacheKey((int)$storeId);
         $cachedData = $this->cache->load($cacheKey);
@@ -42,6 +34,15 @@ class FilterableAttributeOptionsProvider
         $attributeCollection
             ->addFieldToFilter(\Magento\Catalog\Api\Data\EavAttributeInterface::IS_FILTERABLE, true)
             ->addFieldToFilter(\Magento\Eav\Api\Data\AttributeInterface::FRONTEND_INPUT, \MageSuite\SeoLinkMasking\Service\FilterItemUrlProcessor::$filterableAttributeTypes);
+
+        $excludedAttributeCodes = $this->configuration->getExcludedAttributeCodes($storeId);
+
+        if (!empty($excludedAttributeCodes)) {
+            $attributeCollection->addFieldToFilter(
+                \Magento\Catalog\Api\Data\EavAttributeInterface::ATTRIBUTE_CODE,
+                ['nin' => $excludedAttributeCodes]
+            );
+        }
 
         foreach ($attributeCollection as $attribute) {
             /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attribute */
@@ -74,10 +75,12 @@ class FilterableAttributeOptionsProvider
     public function getCacheKey(?int $storeId = null): string
     {
         if (empty($storeId)) {
-            $storeId = $this->storeManager->getStore()->getId();
+            $storeId = (int) $this->storeManager->getStore()->getId();
         }
 
-        return sprintf(self::CACHE_TAG, $storeId);
+        $excludedAttributes = implode(',', $this->configuration->getExcludedAttributeCodes($storeId));
+
+        return sprintf(self::CACHE_TAG, $excludedAttributes, $storeId);
     }
 
     public function rewriteOption(\Magento\Framework\DataObject $parameterOptions): array
