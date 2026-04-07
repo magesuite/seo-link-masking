@@ -49,6 +49,7 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation disabled
      * @magentoConfigFixture current_store catalog/seo/category_url_suffix
      * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/two_categories_multistore.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products_multistore.php
      */
     public function testSwitchToProperCategoryPage(): void
     {
