@@ -2,6 +2,10 @@
 /**
  * Template has been overwritten in order to:
  * 1. Implement PRG (Post-Redirect-Get) for facet navigation links masking
+ * 2. When link masking is active AND the "Render masked filter links without anchor"
+ *    admin option is enabled the anchor is replaced with a span[data-post] so no URL
+ *    (not even "#") leaks into the href preview or to crawlers. The anchor-with-data-post
+ *    fallback is preserved for backwards compatibility when the new option is disabled.
  * NOTE: This file is a copy of:
  * `vendor/creativestyle/magesuite-server-sider-swatches/view/frontend/templates/product/layered/renderer.phtml`
  */
@@ -17,6 +21,8 @@ $postDataHelper = $this->helper(\Magento\Framework\Data\Helper\PostHelper::class
 /** @var \MageSuite\SeoLinkMasking\ViewModel\LayeredNavigation\RenderLayered $viewModel */
 $viewModel = $block->getViewModel();
 $isLinkMaskingEnabled = $swatchData['is_link_masking_enabled'];
+$isAnchorlessEnabled = !empty($swatchData['is_anchorless_enabled']);
+$useAnchorlessSpan = $isLinkMaskingEnabled && $isAnchorlessEnabled;
 $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
 ?>
 
@@ -36,12 +42,19 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                 }
                 $swatchOption = $swatchData['swatches'][$option];
             ?>
-            <a href="<?= $block->escapeUrl($swatchItemHref) ?>"
-               aria-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
-                <?php if($isLinkMaskingEnabled): ?>
-                    data-post='<?= $postDataHelper->getPostData($linkmaskingUrl, ['url' => $swatchItemUrl]); ?>'
-                <?php endif; ?>
-               class="swatch-option-link-layered">
+            <?php if ($useAnchorlessSpan) : ?>
+                <button class="swatch-option-link-layered filter-link-mask"
+                      type="button"
+                      aria-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
+                      data-post='<?= /* @noEscape */ $postDataHelper->getPostData($linkmaskingUrl, ['url' => $swatchItemUrl]); ?>'>
+            <?php else: ?>
+                <a href="<?= $block->escapeUrl($swatchItemHref) ?>"
+                   aria-label="<?= $block->escapeHtmlAttr($label['label']) ?>"
+                    <?php if($isLinkMaskingEnabled): ?>
+                        data-post='<?= $postDataHelper->getPostData($linkmaskingUrl, ['url' => $swatchItemUrl]); ?>'
+                    <?php endif; ?>
+                   class="swatch-option-link-layered">
+            <?php endif; ?>
                 <?php if (isset($swatchOption['type'])) :?>
                     <?php switch ($swatchOption['type']) {
                         case '3':
@@ -101,7 +114,11 @@ $linkmaskingUrl = $this->getUrl('linkmasking/filter/redirect');
                         <?php break;
                     } ?>
                 <?php endif; ?>
-            </a>
+            <?php if ($useAnchorlessSpan) : ?>
+                </button>
+            <?php else : ?>
+                </a>
+            <?php endif; ?>
         <?php endforeach; ?>
     </div>
 </div>

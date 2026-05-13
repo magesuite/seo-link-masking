@@ -17,6 +17,13 @@
                         <![CDATA[By enabling this option, filter links will be "masked" - filter link will not be visible on the storefront and data will be send via POST instead of GET request.]]>
                     </comment>
                 </field>
+                <field id="anchorless_filter_links" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Render masked filter links without anchor</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[When enabled, masked filter links are rendered as &lt;span&gt; elements instead of &lt;a href="#" data-post="..."&gt;. This prevents the URL preview on hover (e.g. "domain.com/category#") and hides the link from search engine crawlers. The filter functionality remains unchanged.]]>
+                    </comment>
+                </field>
                 <field id="default_masking_state" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Default Masking State</label>
                     <source_model>MageSuite\SeoLinkMasking\Model\Source\DefaultMaskingState</source_model>

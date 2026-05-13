@@ -4,6 +4,7 @@
         <seo>
             <link_masking>
                 <is_enabled>0</is_enabled>
+                <anchorless_filter_links>0</anchorless_filter_links>
                 <default_masking_state>0</default_masking_state>
                 <only_one_filter_demasked>0</only_one_filter_demasked>
                 <mask_category_url_on_search_page>0</mask_category_url_on_search_page>

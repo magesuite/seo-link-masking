@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\ViewModel\LayeredNavigation;
 
 class RenderLayered implements \Magento\Framework\View\Element\Block\ArgumentInterface
@@ -14,5 +16,10 @@ class RenderLayered implements \Magento\Framework\View\Element\Block\ArgumentInt
     public function canShowSwatchTooltip(): bool
     {
         return $this->configuration->canShowSwatchTooltip();
+    }
+
+    public function isAnchorlessFilterLinksEnabled(): bool
+    {
+        return $this->configuration->isAnchorlessFilterLinksEnabled();
     }
 }

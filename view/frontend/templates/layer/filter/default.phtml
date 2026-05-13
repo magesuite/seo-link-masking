@@ -5,53 +5,72 @@
  * 2. All echoes changed into shorthand
  * 3. Helper for displaying count assigned to variable
  * 4. Improve a11y
- * 5. Add support for masked categories
+ * 5. Add support for masked categories. When the "Render masked filter links without anchor"
+ *    admin option is enabled the element is rendered as <span data-post> so no URL is exposed
+ *    in the hover preview or to crawlers. When disabled the legacy <a href="#" data-post>
+ *    rendering is preserved for backwards compatibility.
  * Aligned with theme-cs v21 in 07/2025
  *
  * @var $block \Smile\ElasticsuiteCatalog\Block\Navigation\FilterRenderer
  * @var $escaper \Magento\Framework\Escaper
- * @var $viewModel \Creativestyle\CustomizationIpetCatalog\ViewModel\SeoLinkMasking\Category
+ * @var $viewModel \MageSuite\SeoLinkMasking\ViewModel\Category
  * @var $filterItems \Smile\ElasticsuiteCatalog\Model\Layer\Filter\Item\Category[]
  */
 
 $viewModel = $block->getViewModel();
 $displayProductCountOnLayer = $this->helper(\Magento\Catalog\Helper\Data::class)->shouldDisplayProductCountOnLayer(); //phpcs:ignore
+$isMasked = $viewModel->isCategoryFilterMasked();
+$isAnchorless = $viewModel->isCategoryFilterAnchorless();
 ?>
 
 <ol class="items">
-    <?php foreach ($filterItems as $key=>$filterItem): ?>
+    <?php foreach ($filterItems as $key => $filterItem) : ?>
         <li class="item">
-            <?php if ($filterItem->getCount() > 0): ?>
-                <a <?= /* @noEscape */ $viewModel->getCategoryFilterUrl($filterItem); ?>>
-                    <?php if ($this->isMultipleSelectEnabled()) : ?>
+            <?php if ($filterItem->getCount() > 0) : ?>
+                <?php if ($isAnchorless) : ?>
+                    <button class="filter-link-mask"
+                          type="button"
+                          data-post='<?= /* @noEscape */ $viewModel->getCategoryFilterPostData($filterItem) ?>'>
+                <?php elseif ($isMasked): ?>
+                    <a href="#" data-post='<?= /* @noEscape */ $viewModel->getCategoryFilterPostData($filterItem) ?>'>
+                <?php else : ?>
+                    <a href="<?= /* @noEscape */ $viewModel->getCategoryFilterUrl($filterItem) ?>">
+                <?php endif; ?>
+                    <?php if ($block->isMultipleSelectEnabled()) : ?>
                         <input id="<?= $escaper->escapeHtmlAttr($filterItem->getLabel() . '_' . $key) ?>" type="checkbox" onclick="this.parentNode.click();" <?php if($filterItem->getIsSelected()) : ?>checked<?php endif; ?> />
                         <label for="<?= $escaper->escapeHtmlAttr($filterItem->getLabel() . '_' . $key) ?>">
-                    <?php else: ?>
+                    <?php else : ?>
                         <span>
                     <?php endif; ?>
-                        <?= /* @escapeNotVerified */ $filterItem->getLabel() ?>
+                        <?= $escaper->escapeHtml($filterItem->getLabel()); ?>
                         <?php if ($displayProductCountOnLayer): ?>
                             <span class="count">
-                                <?= /* @escapeNotVerified */ $filterItem->getCount()?>
+                                <?= $escaper->escapeHtml($filterItem->getCount()); ?>
                             <span class="filter-count-label">
-                            <?php if ($filterItem->getCount() == 1):?>
-                                <?= /* @escapeNotVerified */ __('item')?>
-                            <?php else:?>
-                                <?= /* @escapeNotVerified */ __('items') ?>
-                            <?php endif;?></span></span>
+                            <?php if ($filterItem->getCount() == 1) : ?>
+                                <?= $escaper->escapeHtml(__('item')) ?>
+                            <?php else : ?>
+                                <?= $escaper->escapeHtml(__('items')) ?>
+                            <?php endif;?></span>
+                            </span>
                         <?php endif; ?>
-                    </<?= $this->isMultipleSelectEnabled() ? 'label' : 'span' ?>>
-                </a>
+                    </<?= $block->isMultipleSelectEnabled() ? 'label' : 'span' ?>>
+                <?php if ($isAnchorless) : ?>
+                    </button>
+                <?php else : ?>
+                    </a>
+                <?php endif; ?>
             <?php else:?>
-                <?= /* @escapeNotVerified */ $filterItem->getLabel() ?>
+                <?= $escaper->escapeHtml($filterItem->getLabel()); ?>
                 <?php if ($displayProductCountOnLayer): ?>
                     <span class="count">
-                        <?= /* @escapeNotVerified */ $filterItem->getCount()?>
+                        <?= $escaper->escapeHtml($filterItem->getCount()); ?>
                         <span class="filter-count-label">
-                        <?php if ($filterItem->getCount() == 1):?>
-                            <?= /* @escapeNotVerified */ __('item')?>
-                        <?php else:?>
-                            <?= /* @escapeNotVerified */ __('items') ?><?php endif;?>
+                        <?php if ($filterItem->getCount() == 1) : ?>
+                            <?= $escaper->escapeHtml(__('item')) ?>
+                        <?php else : ?>
+                            <?= $escaper->escapeHtml(__('items')) ?>
+                        <?php endif; ?>
                         </span>
                     </span>
                 <?php endif; ?>
