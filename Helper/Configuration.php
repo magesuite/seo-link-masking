@@ -9,6 +9,7 @@ class Configuration
     public const LINK_MASKING_PARAMETER_REGISTRY_KEY = 'link_masking_parameters';
 
     public const XML_PATH_SEO_LINK_MASKING_IS_ENABLED = 'seo/link_masking/is_enabled';
+    public const XML_PATH_SEO_LINK_MASKING_ANCHORLESS_FILTER_LINKS = 'seo/link_masking/anchorless_filter_links';
     public const XML_PATH_SEO_LINK_MASKING_DEFAULT_MASKING_STATE = 'seo/link_masking/default_masking_state';
     public const XML_PATH_SEO_LINK_MASKING_ONLY_ONE_FILTER_DEMASKED = 'seo/link_masking/only_one_filter_demasked';
     public const XML_PATH_SEO_LINK_MASKING_MASK_CATEGORY_URL_ON_SEARCH_PAGE = 'seo/link_masking/mask_category_url_on_search_page';
@@ -32,6 +33,19 @@ class Configuration
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_SEO_LINK_MASKING_IS_ENABLED,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    public function isAnchorlessFilterLinksEnabled(?int $storeId = null): bool
+    {
+        if (!$this->isLinkMaskingEnabled($storeId)) {
+            return false;
+        }
+
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_SEO_LINK_MASKING_ANCHORLESS_FILTER_LINKS,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $storeId
         );

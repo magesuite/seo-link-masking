@@ -39,6 +39,7 @@ class AddLinkMaskingToSwatchData
     public function afterGetSwatchData(\Magento\Swatches\Block\LayeredNavigation\RenderLayered $subject, $result)
     {
         $result['is_link_masking_enabled'] = false;
+        $result['is_anchorless_enabled'] = $this->configuration->isAnchorlessFilterLinksEnabled();
 
         $category = $this->getCategory();
 

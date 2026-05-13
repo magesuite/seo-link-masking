@@ -38,6 +38,7 @@ class AddLinkMaskingToFilterData
         }
 
         $jsLayoutConfig = json_decode($result, true);
+        $jsLayoutConfig['isAnchorlessEnabled'] = $this->configuration->isAnchorlessFilterLinksEnabled();
 
         if (!$this->configuration->isLinkMaskingEnabled()) {
             $jsLayoutConfig['isLinkMaskingEnabled'] = false;
