@@ -4,45 +4,21 @@ namespace MageSuite\SeoLinkMasking\Model;
 
 class FilterParametersProcessor
 {
-    /**
-     * @var \MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider
-     */
-    protected $filterableAttributeOptionsProvider;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter
-     */
-    protected $filtrableAttributeUtfFriendlyConverter;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Url
-     */
-    protected $urlHelper;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Configuration
-     */
-    protected $configuration;
-
     public function __construct(
-        \MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider $filterableAttributeOptionsProvider,
-        \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter,
-        \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
+        protected \MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider $filterableAttributeOptionsProvider,
+        protected \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter,
+        protected \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
+        protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration
     ) {
-        $this->filterableAttributeOptionsProvider = $filterableAttributeOptionsProvider;
-        $this->filtrableAttributeUtfFriendlyConverter = $filtrableAttributeUtfFriendlyConverter;
-        $this->urlHelper = $urlHelper;
-        $this->configuration = $configuration;
     }
 
-    public function process($urlParameters, $storeId = null)
+    public function process(string $urlParameters, ?int $storeId = null): ?array
     {
         $parameters = ltrim($urlParameters, '/');
         $parameters = explode('/', $parameters);
 
         if (empty($parameters)) {
-            return false;
+            return null;
         }
 
         $options = $this->filterableAttributeOptionsProvider->getOptions($storeId);
@@ -62,18 +38,18 @@ class FilterParametersProcessor
         }
 
         if (count($parameters) != $filterParameterItemsCount) {
-            return false;
+            return null;
         }
 
         return $filterParameters;
     }
 
-    public function processRewrite($urlParameters, $oldStoreId, $targetStoreId)
+    public function processRewrite(string $urlParameters, int $oldStoreId, int $targetStoreId): ?array
     {
         $filterParameters = $this->process($urlParameters, $oldStoreId);
 
         if (empty($filterParameters)) {
-            return false;
+            return null;
         }
 
         foreach ($filterParameters as $code => $value) {
@@ -89,17 +65,24 @@ class FilterParametersProcessor
         return $filterParameters;
     }
 
-    public function toUrl($filterParameters)
+    public function toUrl(array $filterParameters): string
     {
+        $separator = $this->configuration->getMultiselectOptionSeparator();
+
         foreach ($filterParameters as $code => $values) {
-            $value = implode($this->configuration->getMultiselectOptionSeparator(), $values);
-            $filterParameters[$code] = $this->urlHelper->encodeValue($value);
+            if (!is_array($values)) {
+                $filterParameters[$code] = $this->urlHelper->encodeValue($values);
+                continue;
+            }
+
+            $values = array_map([$this->urlHelper, 'encodeValue'], $values);
+            $filterParameters[$code] = implode($separator, $values);
         }
 
         return '/' . implode('/', $filterParameters);
     }
 
-    protected function prepareParameter($parameter, $options)
+    protected function prepareParameter(string $parameter, array $options): ?array
     {
         if (empty($parameter)) {
             return null;
@@ -107,7 +90,7 @@ class FilterParametersProcessor
 
         $multiselectOptionSeparator = $this->configuration->getMultiselectOptionSeparator();
 
-        if (strpos($parameter, $multiselectOptionSeparator) === false) {
+        if (!str_contains($parameter, $multiselectOptionSeparator)) {
             return $this->getFilterValues($parameter, $options);
         }
 
@@ -134,13 +117,14 @@ class FilterParametersProcessor
         return ['key' => $key, 'value' => $values];
     }
 
-    protected function addFilteredParameter($filterParameters, $preparedParameter)
+    protected function addFilteredParameter(array $filterParameters, array $preparedParameter): array
     {
         $preparedParameterKey = $preparedParameter['key'];
         $preparedParameterValue = $preparedParameter['value'];
 
         if (!isset($filterParameters[$preparedParameterKey])) {
             $filterParameters[$preparedParameterKey] = $preparedParameterValue;
+
             return $filterParameters;
         }
 
@@ -149,6 +133,7 @@ class FilterParametersProcessor
         }
 
         $filterParameters[$preparedParameterKey][] = $preparedParameterValue;
+
         return $filterParameters;
     }
 

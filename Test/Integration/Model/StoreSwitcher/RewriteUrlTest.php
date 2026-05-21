@@ -17,6 +17,7 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
+
         $this->storeSwitcher = $objectManager->get(\Magento\Store\Model\StoreSwitcher::class);
         $this->storeRepository = $objectManager->get(\Magento\Store\Api\StoreRepositoryInterface::class);
     }
@@ -39,6 +40,27 @@ class RewriteUrlTest extends \PHPUnit\Framework\TestCase
 
         $redirectUrl = "http://localhost/index.php/test-category/option+1";
         $expectedUrl = "http://localhost/index.php/test-category-translated/option+1+translated";
+
+        $this->assertEquals($expectedUrl, $this->storeSwitcher->switch($fromStore, $toStore, $redirectUrl));
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation disabled
+     * @magentoConfigFixture current_store seo/link_masking/is_short_filter_url_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/multiselect_option_separator /
+     * @magentoConfigFixture default/seo/link_masking/excluded_characters /
+     * @magentoDataFixture Magento/Store/_files/second_store.php
+     * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/filterable_products_multistore.php
+     */
+    public function testSwitchPreservesSlashSeparatorBetweenMultiOptionValues(): void
+    {
+        $fromStore = $this->storeRepository->get('default');
+        $toStore = $this->storeRepository->get('fixture_second_store');
+
+        $redirectUrl = 'http://localhost/index.php/test-category/option+1/option+2';
+        $expectedUrl = 'http://localhost/index.php/test-category-translated/option+1+translated/option+2+translated';
 
         $this->assertEquals($expectedUrl, $this->storeSwitcher->switch($fromStore, $toStore, $redirectUrl));
     }
