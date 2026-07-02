@@ -1,50 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Plugin\Catalog\Model\Layer\Filter\AbstractFilter;
 
 class IsLinkMaskingEnabled
 {
-    /**
-     * @var \Magento\Framework\App\RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $registry;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Filter
-     */
-    protected $filterHelper;
-
-    /**
-     * @var \MageSuite\SeoLinkMasking\Helper\Category
-     */
-    protected $categoryHelper;
-
     public function __construct(
-        \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\Registry $registry,
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
-        \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper,
-        \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper
+        protected \Magento\Framework\App\RequestInterface $request,
+        protected \Magento\Framework\Registry $registry,
+        protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        protected \MageSuite\SeoLinkMasking\Helper\Filter $filterHelper,
+        protected \MageSuite\SeoLinkMasking\Helper\Category $categoryHelper
     ) {
-        $this->request = $request;
-        $this->registry = $registry;
-        $this->configuration = $configuration;
-        $this->filterHelper = $filterHelper;
-        $this->categoryHelper = $categoryHelper;
     }
 
-    public function aroundGetData(\Magento\Catalog\Model\Layer\Filter\AbstractFilter $subject, \Closure $proceed, $key = '', $index = null)
-    {
+    public function aroundGetData(
+        \Magento\Catalog\Model\Layer\Filter\AbstractFilter $subject,
+        \Closure $proceed,
+        $key = '',
+        $index = null
+    ): mixed {
         if ($key != 'is_link_masking_enabled' || !$subject->hasAttributeModel()) {
             return $proceed($key, $index);
         }
@@ -60,13 +36,26 @@ class IsLinkMaskingEnabled
         return $this->filterHelper->isFilterMasked($category, $attributeId);
     }
 
-    protected function getCategory($subject)
-    {
-        if ($this->request->getFullActionName() == \MageSuite\SeoLinkMasking\Helper\Page::AJAX_FILTER_FULL_ACTION_NAME) {
+    protected function getCategory(
+        \Magento\Catalog\Model\Layer\Filter\AbstractFilter $subject
+    ): ?\Magento\Catalog\Api\Data\CategoryInterface {
+        $isAjaxFilterCall = $this->request->getFullActionName() == \MageSuite\SeoLinkMasking\Helper\Page::AJAX_FILTER_FULL_ACTION_NAME;
+
+        if ($isAjaxFilterCall && $this->isSearchContext()) {
+            return $this->categoryHelper->getRootCategory();
+        }
+
+        if ($isAjaxFilterCall) {
             return $subject->getLayer()->getCurrentCategory();
         }
 
         $category = $this->registry->registry('current_category');
+
         return $this->categoryHelper->getCategoryEntityForSearchResultPage($category);
+    }
+
+    protected function isSearchContext(): bool
+    {
+        return $this->request->getParam('q') !== null;
     }
 }

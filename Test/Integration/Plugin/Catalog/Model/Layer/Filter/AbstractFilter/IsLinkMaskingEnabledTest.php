@@ -115,4 +115,31 @@ class IsLinkMaskingEnabledTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($this->attributeFilter->getIsLinkMaskingEnabled());
     }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store seo/link_masking/is_enabled 1
+     * @magentoConfigFixture current_store seo/link_masking/default_masking_state 1
+     */
+    public function testLinkMaskingStateIsTakenFromRootCategoryOnSearchResultPageAjaxFilterCall()
+    {
+        $category = $this->objectManager->create(\Magento\Catalog\Model\Category::class);
+        $category->setId(1);
+
+        $attributeId = $this->attributeFilter->getAttributeModel()->getId();
+        $category->setSeoLinkMasking([$attributeId => false]);
+
+        $this->registry->unregister('current_category');
+        $this->registry->register('current_category', $category);
+
+        $this->request
+            ->setRouteName('catalog')
+            ->setControllerName('navigation_filter')
+            ->setActionName('ajax')
+            ->setParam('q', 'drink');
+
+        $this->assertTrue($this->attributeFilter->getIsLinkMaskingEnabled());
+    }
 }
