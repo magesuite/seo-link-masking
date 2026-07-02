@@ -28,10 +28,15 @@ class Category
             $this->pageHelper->isSearchResultPage() ||
             $this->pageHelper->isBrandsIndexPage()
         ) {
-            $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
-            return $this->categoryRepository->get($rootCategoryId);
+            return $this->getRootCategory();
         }
 
         return null;
+    }
+
+    public function getRootCategory(): \Magento\Catalog\Api\Data\CategoryInterface
+    {
+        $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
+        return $this->categoryRepository->get($rootCategoryId);
     }
 }

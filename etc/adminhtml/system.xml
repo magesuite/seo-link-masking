@@ -41,6 +41,9 @@
                 <field id="mask_category_url_on_search_page" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable masking for category url on search</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[When enabled, category filter links on the search results page are masked (sent via POST instead of a visible GET link).]]>
+                    </comment>
                 </field>
                 <field id="is_short_filter_url_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable hiding of filter names in URL</label>
