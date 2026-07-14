@@ -27,8 +27,8 @@ class CategoryTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture MageSuite_SeoLinkMasking::Test/Integration/_files/categories.php
-     * @dataProvider dataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     public function testItReturnsCorrectAttributeValue(int $categoryId, ?array $expectedFilterState): void
     {
         $category = $this->categoryRepository->get($categoryId);

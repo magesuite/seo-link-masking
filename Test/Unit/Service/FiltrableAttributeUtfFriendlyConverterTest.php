@@ -19,11 +19,11 @@ class FiltrableAttributeUtfFriendlyConverterTest extends \PHPUnit\Framework\Test
     }
 
     /**
-     * @dataProvider getFilteredValues
      * @param $filteredValues
      * @param $expectedFilteredValues
      * @param $excludedCharacters
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getFilteredValues')]
     public function testItReturnsCorrectValuesRoundUp(string $filteredValues, string $expectedFilteredValues, array $excludedCharacters): void
     {
         $this->configurationStub->method('getExcludedCharacters')->willReturn($excludedCharacters);
