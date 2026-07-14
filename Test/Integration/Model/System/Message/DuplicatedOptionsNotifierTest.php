@@ -70,10 +70,8 @@ class DuplicatedOptionsNotifierTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @before
-     * @after
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
+    #[\PHPUnit\Framework\Attributes\After]
     public function cleanAttributesWithOptionsCache(): void
     {
         $attributesWithOptionsCache = \Magento\TestFramework\ObjectManager::getInstance()
