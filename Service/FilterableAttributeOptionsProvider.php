@@ -8,6 +8,7 @@ class FilterableAttributeOptionsProvider
 {
     public const CACHE_LIFETIME = 86400;
     public const CACHE_TAG = 'filter_attribute_options_%s_%s';
+    public const CACHE_INVALIDATION_TAG = 'filter_attribute_options';
 
     public function __construct(
         protected \Magento\Framework\App\CacheInterface $cache,
@@ -67,7 +68,12 @@ class FilterableAttributeOptionsProvider
             }
         }
 
-        $this->cache->save($this->serializer->serialize($options), $cacheKey, [], self::CACHE_LIFETIME);
+        $this->cache->save(
+            $this->serializer->serialize($options),
+            $cacheKey,
+            [\Magento\Eav\Model\Cache\Type::CACHE_TAG, self::CACHE_INVALIDATION_TAG],
+            self::CACHE_LIFETIME
+        );
 
         return $options;
     }

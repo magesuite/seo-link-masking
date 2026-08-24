@@ -93,7 +93,7 @@ class DuplicatedOptionsNotifier
         $this->cache->save(
             $this->serializer->serialize($options),
             self::CACHE_TAG,
-            [],
+            [\Magento\Eav\Model\Cache\Type::CACHE_TAG, \MageSuite\SeoLinkMasking\Service\FilterableAttributeOptionsProvider::CACHE_INVALIDATION_TAG],
             $this->configuration->getCacheLengthForWarningAboutDuplicatedOptions()
         );
         return $options;
