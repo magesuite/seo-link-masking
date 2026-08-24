@@ -1,23 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\SeoLinkMasking\Model\System\Message;
 
 class NotificationAboutDuplicatedOptions implements \Magento\Framework\Notification\MessageInterface
 {
-    protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration;
-
-    protected \MageSuite\SeoLinkMasking\Service\DuplicatedOptionsNotifier $duplicatedOptionsNotifier;
-
-    protected \MageSuite\SeoLinkMasking\Helper\Url $url;
-
     public function __construct(
-        \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
-        \MageSuite\SeoLinkMasking\Service\DuplicatedOptionsNotifier $duplicatedOptionsNotifier,
-        \MageSuite\SeoLinkMasking\Helper\Url $url
+        protected \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
+        protected \MageSuite\SeoLinkMasking\Service\DuplicatedOptionsNotifier $duplicatedOptionsNotifier,
+        protected \MageSuite\SeoLinkMasking\Helper\Url $url,
+        protected \Magento\Framework\Escaper $escaper
     ) {
-        $this->configuration = $configuration;
-        $this->duplicatedOptionsNotifier = $duplicatedOptionsNotifier;
-        $this->url = $url;
     }
 
     public function getIdentity(): string
@@ -49,8 +43,14 @@ class NotificationAboutDuplicatedOptions implements \Magento\Framework\Notificat
         $duplicatedOptions = $this->duplicatedOptionsNotifier->getDuplicatedOptionsInAttributes();
 
         foreach ($duplicatedOptions as $option => $attributes) {
-            $message .= sprintf('%s: ', sprintf('<b>%s</b>', $this->url->decodeValue($option)));
-            $message .= implode(', ', $attributes) . '<br />';
+            $escapedOption = $this->escaper->escapeHtml($this->url->decodeValue($option));
+            $escapedAttributes = array_map(
+                fn ($attribute) => $this->escaper->escapeHtml($attribute),
+                $attributes
+            );
+
+            $message .= sprintf('%s: ', sprintf('<b>%s</b>', $escapedOption));
+            $message .= implode(', ', $escapedAttributes) . '<br />';
         }
 
         $message .= '<br />';
@@ -61,7 +61,7 @@ class NotificationAboutDuplicatedOptions implements \Magento\Framework\Notificat
         return $message;
     }
 
-    public function getSeverity(): string
+    public function getSeverity(): int
     {
         return self::SEVERITY_MAJOR;
     }

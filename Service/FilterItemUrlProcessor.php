@@ -22,8 +22,6 @@ class FilterItemUrlProcessor
     const MODE_ADD = 'add';
     const MODE_REMOVE = 'remove';
 
-    const CATEGORY_URL_CACHE_TAG = 'category_url_%s_%s';
-
     /**
      * @var \Magento\Framework\App\RequestInterface
      */
@@ -60,16 +58,6 @@ class FilterItemUrlProcessor
     protected $filterableAttributes = [];
 
     /**
-     * @var \Magento\Framework\App\CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
      * @var \Magento\Catalog\Api\CategoryRepositoryInterface
      */
     protected $categoryRepository;
@@ -81,8 +69,6 @@ class FilterItemUrlProcessor
         \MageSuite\SeoLinkMasking\Service\FiltrableAttributeUtfFriendlyConverter $filtrableAttributeUtfFriendlyConverter,
         \MageSuite\SeoLinkMasking\Helper\Url $urlHelper,
         \MageSuite\SeoLinkMasking\Helper\Configuration $configuration,
-        \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
     ) {
         $this->request = $request;
@@ -91,8 +77,6 @@ class FilterItemUrlProcessor
         $this->filtrableAttributeUtfFriendlyConverter = $filtrableAttributeUtfFriendlyConverter;
         $this->urlHelper = $urlHelper;
         $this->configuration = $configuration;
-        $this->cache = $cache;
-        $this->storeManager = $storeManager;
         $this->categoryRepository = $categoryRepository;
     }
 
@@ -262,33 +246,14 @@ class FilterItemUrlProcessor
         return $params;
     }
 
-    public function getCategoryUrl($category)
+    public function getCategoryUrl(?\Magento\Catalog\Api\Data\CategoryInterface $category): string
     {
-        if ($category) {
-            $categoryId = $category->getId();
-        } else {
-            $categoryId = $this->request->getParam('cat');
-        }
-
-        $categoryUrlCacheKey = $this->getCategoryUrlCacheKey($categoryId);
-        $categoryUrlCacheData = $this->cache->load($categoryUrlCacheKey);
-
-        if ($categoryUrlCacheData) {
-            return $categoryUrlCacheData;
-        }
-
         if (!$category) {
-            $category = $this->categoryRepository->get($categoryId, $this->storeManager->getStore()->getId());
+            $categoryId = $this->request->getParam('cat');
+            $category = $this->categoryRepository->get($categoryId);
         }
-
-        $this->cache->save($category->getUrl(), $categoryUrlCacheKey, [sprintf('%s_%s', \Magento\Catalog\Model\Category::CACHE_TAG, $categoryId)]);
 
         return $category->getUrl();
-    }
-
-    public function getCategoryUrlCacheKey($categoryId)
-    {
-        return sprintf(self::CATEGORY_URL_CACHE_TAG, $categoryId, $this->storeManager->getStore()->getId());
     }
 
     public function getUrl($category, $requestParameters)
